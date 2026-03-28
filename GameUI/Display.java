@@ -22,6 +22,7 @@ public class Display {
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
     private final Color HOVER_COLOR = new Color(60, 60, 60);
+    private int[] scores = {0, 0, 0};
     private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
     private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 20);
     private static final Font LABEL_FONT = new Font("SansSerif", Font.ITALIC, 14);
@@ -33,6 +34,10 @@ public class Display {
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         resetScore();
+    }
+
+    public void setScore(int game, int score) {
+        scores[game] = score;
     }
 
     private JLabel createTitle() {
@@ -79,14 +84,13 @@ public class Display {
 
         gbc.gridx = 0;
 
-        String reactionScoreText = Integer.toString(getScore());
-        buttonContainer.add(createGameGroup("REACTION SPEED", reactionScoreText, this::startGameOne), gbc);
+        buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], this::startGameOne), gbc);
 
         gbc.gridx = 1;
-        buttonContainer.add(createGameGroup("MEMORY GAME", "score", this::startGameTwo), gbc);
+        buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], this::startGameTwo), gbc);
 
         gbc.gridx = 2;
-        buttonContainer.add(createGameGroup("TYPING GAME", "score", this::startGameThree), gbc);
+        buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], this::startGameThree), gbc);
 
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
@@ -140,17 +144,17 @@ public class Display {
     }
 
     private void startGameOne() {
-        Square square = new Square(this::createMenu);
+        Square square = new Square(this::createMenu, this);
         setScreen(square.getGamePanel());
     }
 
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu());
+        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
 
     private void startGameThree() {
-        setScreen(new Game3UI());
+        setScreen(new Game3UI(this));
     }
 
     private void setScreen(Component component) {

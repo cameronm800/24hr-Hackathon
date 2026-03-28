@@ -3,11 +3,13 @@ package Game3;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import GameUI.Display;
 import java.awt.event.KeyEvent;
 
 import General.UIStopWatch;
 
 public class Game3UI extends JPanel implements KeyEventDispatcher {
+    private Display display;
     UIStopWatch timer;
     TypingTester typingTester;
     SwingWorker<Object, Object> timerLabelUpdater;
@@ -31,6 +33,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                             "<font color='green'>%s</font>" +
                             "</html>", typingTester.getTypedString());
                     textLabel.setText(labelText);
+                    display.setScore(2, typingTester.getScore());
                     break;
                 case TypingTester.TypeResult.CORRECT:
                     labelText = String.format("<html>" +
@@ -78,9 +81,10 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         }
     }
 
-    public Game3UI() {
+    public Game3UI(Display display) {
         //TODO Make sure directional
         super(new BorderLayout());
+        this.display = display;
 
         timeLabel = new JLabel("00:00:000");
         textLabel = new JLabel("hello World");
