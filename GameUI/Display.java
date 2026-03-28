@@ -3,6 +3,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import Game1.Square;
+import Game3.Game3UI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -109,6 +110,10 @@ setScreen(panel);
         square.changePlacement();
         setScreen(square.getGamePanel());
     }
+
+
+
+
 
     private void setScreen(Component component) {
         frame.getContentPane().removeAll();
