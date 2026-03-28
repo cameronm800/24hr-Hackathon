@@ -11,11 +11,15 @@ import java.util.Random;
 public class MemoryPlus {
     private int[][] grid;
     private Color[][] colors;  // Use Color objects instead of integers
-    private final int UISize = 580;
-    private final int cardSize = 80;
+    private final int UISize = 580;  // Size of the entire UI (game panel)
+    private final int cardSize = 80;  // Size of each card
     private boolean[][] flippedCards;
     private boolean[][] matchedCards; // Keep track of matched cards
     private int score = 0;
+    private long startTime;  // Variable to track the start time
+    private JLabel scoreLabel;  // Label to display score
+    private JLabel timeLabel;  // Label to display time
+    private Timer gameTimer;  // Timer for time tracking
 
     private JPanel gamePanel;
     private int firstFlippedRow = -1;
@@ -32,16 +36,26 @@ public class MemoryPlus {
         this.matchedCards = new boolean[k][k]; // Track matched cards
         this.generateGrid(k, r);  // Generate the grid and color pairs
         this.createGamePanel();  // Create the game panel
-        startShowCardsTimer();  // Start the timer to show all cards for 1 second
+        startGameTimer();  // Start the game timer to track the elapsed time
+        
+        // Show all cards for 1 second at the beginning of the game
+        Timer startTimer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showingCards = false;  // Hide the cards after 1 second
+                gamePanel.repaint();   // Repaint the panel to hide the cards
+                ((Timer)e.getSource()).stop(); // Stop the timer
+            }
+        });
+        startTimer.start();  // Start the timer
     }
 
     // Generate grid with random pairs of colors
     public void generateGrid(int k, int r) {
         Random rand = new Random();
-        
+
         // Create a list of pairs of random colors
         List<Color> colorPairs = new ArrayList<>();
-        
+
         // Create pairs of random colors, ensuring each color is used twice
         for (int i = 0; i < (k * k) / 2; i++) {
             Color randomColor = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)); // Random color
@@ -61,35 +75,24 @@ public class MemoryPlus {
         }
     }
 
-    public void addNum(int i, int j, int n) {
-        this.grid[i][j] = n;
-    }
-
-    public int[][] getColors() {
-        return this.grid;
-    }
-
-    public Color[][] getColorArray() {
-        return this.colors;
-    }
-
     // Create the game panel and handle card clicks
     public void createGamePanel() {
-        gamePanel = new JPanel() {
+        gamePanel = new JPanel(new BorderLayout());
+        gamePanel.setBackground(Color.BLACK);  // Set the background color to black for the game panel
+
+        // Create the grid panel for the cards
+        JPanel gridPanel = new JPanel() {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.BLACK);
-                g.fillRect(0, 0, getWidth(), getHeight());
-
-                // If we're in the showingCards phase, show all the cards
+                // Draw the cards based on their flipped and matched states
                 for (int i = 0; i < grid.length; i++) {
                     for (int j = 0; j < grid[i].length; j++) {
                         int x = i * cardSize + 20;
                         int y = j * cardSize + 20;
 
-                        // Show all cards if showingCards flag is true or the card is flipped/matched
+                        // Show all cards if the showingCards flag is true or the card is flipped/matched
                         if (showingCards || flippedCards[i][j] || matchedCards[i][j]) {
-                            g.setColor(colors[i][j]);  // Use Color object for drawing
+                            g.setColor(colors[i][j]);  // Use the Color object for drawing the card
                             g.fillRect(x, y, cardSize, cardSize);
                         } else {
                             g.setColor(Color.GRAY);  // Draw face-down card
@@ -100,12 +103,36 @@ public class MemoryPlus {
             }
 
             public Dimension getPreferredSize() {
-                return new Dimension(UISize, UISize);
+                return new Dimension(UISize, UISize);  // Set the size of the grid panel
             }
         };
 
-        gamePanel.setLayout(null);
-        gamePanel.addMouseListener(new MouseAdapter() {
+        // Add gridPanel to the center of the gamePanel
+        gamePanel.add(gridPanel, BorderLayout.CENTER);
+
+        // Add score and time labels to the top
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+        topPanel.setBackground(Color.BLACK);  // Make sure the top panel also has a black background
+        topPanel.setOpaque(true);  // Ensure that it doesn't inherit transparency
+
+        scoreLabel = new JLabel("Score: " + score);
+        timeLabel = new JLabel("Time: 0s");
+
+        scoreLabel.setForeground(Color.WHITE);
+        timeLabel.setForeground(Color.WHITE);
+
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));  // Increase font size for score
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 20));  // Increase font size for time
+
+        topPanel.add(scoreLabel);
+        topPanel.add(Box.createHorizontalGlue());
+        topPanel.add(timeLabel);
+
+        gamePanel.add(topPanel, BorderLayout.NORTH);
+
+        // MouseListener to handle card clicks
+        gridPanel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int mousePosX = e.getX();
                 int mousePosY = e.getY();
@@ -126,26 +153,26 @@ public class MemoryPlus {
         });
     }
 
-    // Handle the logic when a card is clicked
+    // Handle card click logic
     public void cardClicked(int i, int j) {
         if (!flippedCards[i][j] && !matchedCards[i][j]) {
             flippedCards[i][j] = true;
 
-            // If this is the first card being flipped
+            // If this is the first card flipped
             if (firstFlippedRow == -1) {
                 firstFlippedRow = i;
                 firstFlippedCol = j;
             }
-            // If this is the second card being flipped
+            // If this is the second card flipped
             else if (secondFlippedRow == -1) {
                 secondFlippedRow = i;
                 secondFlippedCol = j;
 
-                // Use a timer to delay the checking of the second card for a moment
-                Timer timer = new Timer(500, new ActionListener() {
+                // Use a timer to delay checking the second card for a moment
+                javax.swing.Timer timer = new javax.swing.Timer(500, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         checkMatch(); // Check the two flipped cards
-                        ((Timer)e.getSource()).stop(); // Stop the timer
+                        ((javax.swing.Timer)e.getSource()).stop(); // Stop the timer
                     }
                 });
                 timer.start();
@@ -153,7 +180,7 @@ public class MemoryPlus {
         }
     }
 
-    // Check if two flipped cards match
+    // Check if the flipped cards match
     public void checkMatch() {
         if (colors[firstFlippedRow][firstFlippedCol].equals(colors[secondFlippedRow][secondFlippedCol])) {
             // If they match, mark as matched and increase score
@@ -166,31 +193,68 @@ public class MemoryPlus {
             flippedCards[secondFlippedRow][secondFlippedCol] = false;
         }
 
+        // Update the score display
+        scoreLabel.setText("Score: " + score);
+
         // Reset flipped card positions
         firstFlippedRow = -1;
         firstFlippedCol = -1;
         secondFlippedRow = -1;
         secondFlippedCol = -1;
+
+        // Check if all cards are matched
+        if (isGameOver()) {
+            stopGameTimer();  // Stop the timer when the game is over
+            saveGameResult();  // Save the result to the database
+            endGame();  // Show a game over message and stop the game
+        }
     }
 
-    // Start the timer to display all cards for 1 second
-    public void startShowCardsTimer() {
-        // Show all cards for 1 second before the game starts
-        Timer timer = new Timer(1000, new ActionListener() {
+    // Start the game timer
+    public void startGameTimer() {
+        startTime = System.currentTimeMillis();  // Store the start time
+
+        gameTimer = new javax.swing.Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showingCards = false;  // Hide the cards after 1 second
-                gamePanel.repaint();   // Repaint the panel to hide the cards
-                ((Timer)e.getSource()).stop(); // Stop the timer
+                long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+                timeLabel.setText("Time: " + elapsedTime + "s");
             }
         });
-        timer.start();
+        gameTimer.start();  // Start the timer
     }
 
-    // Get the current score
-    public int getScore() {
-        return this.score;
+    // Stop the game timer
+    public void stopGameTimer() {
+        gameTimer.stop();  // Stop the timer
     }
 
+    // Check if the game is over (all cards are matched)
+    public boolean isGameOver() {
+        for (int i = 0; i < matchedCards.length; i++) {
+            for (int j = 0; j < matchedCards[i].length; j++) {
+                if (!matchedCards[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // Save the game result (score and time) to the database
+    public void saveGameResult() {
+        long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;  // Time in seconds
+        // Here you can implement a database connection to store score and time
+        System.out.println("Game Over! Score: " + score + ", Time: " + elapsedTime + "s");
+    }
+
+    // Show a game over message and stop the game
+    public void endGame() {
+        JOptionPane.showMessageDialog(gamePanel, "Game Over! Your score is: " + score, 
+            "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);  // Close the game
+    }
+
+    // Get the game panel for display
     public JPanel getGamePanel() {
         return gamePanel;
     }
