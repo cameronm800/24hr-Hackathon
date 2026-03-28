@@ -1,5 +1,6 @@
 package GameUI;
 import javax.swing.*;
+import Game1.*;
 public class Display {
 
     public Display() {
