@@ -59,15 +59,6 @@ public class Display {
         }
     }
 
-    private int getScore() {
-        int score = 0;
-        try (Scanner input = new Scanner(new File("scoreData.txt"))) {
-            score = input.nextInt();
-        } catch (FileNotFoundException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return score;
-    }
 
     public void createMenu() {
         frame.getContentPane().removeAll();
