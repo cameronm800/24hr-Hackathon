@@ -4,8 +4,7 @@ import javax.swing.border.*;
 
 import Game1.Square;
 import Game2.MemoryPlus;
-import Game3.Game3UI;
-import Game3.TypingTester;
+import Game3.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -52,13 +51,13 @@ public class Display {
         gbc.gridy = 0;
 
         gbc.gridx = 0;
-        buttonContainer.add(createGameGroup("REACTION SPEED", "EDP's might", this::startGameOne), gbc);
+        buttonContainer.add(createGameGroup("REACTION SPEED", "Score 1: ", this::startGameOne), gbc);
 
         gbc.gridx = 1;
-        buttonContainer.add(createGameGroup("MEMORY GAME", "diddy's best", this::startGameTwo), gbc);
+        buttonContainer.add(createGameGroup("MEMORY GAME", "Score 2: ", this::startGameTwo), gbc);
 
         gbc.gridx = 2;
-        buttonContainer.add(createGameGroup("TYPING GAME", "epstein's favourite", this::startGameThree), gbc);
+        buttonContainer.add(createGameGroup("TYPING GAME", "Score 3: ", this::startGameThree), gbc);
 
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
