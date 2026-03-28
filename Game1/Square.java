@@ -11,8 +11,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Date;
-import Database.Database;
+import GameUI.Display;
 
 //WARNING AI SLOP!! BEWAREW!!
 
@@ -32,7 +31,7 @@ public class Square {
 
     private final List<SquareEntity> squares = new ArrayList<>();
 
-    public Square(Runnable onExit) {
+    public Square(Runnable onExit, Display orgDisplay) {
         this.onExit = onExit;
         gamePanel = new JPanel() {
             @Override
@@ -83,19 +82,12 @@ public class Square {
         uiStopWatch = new UIStopWatch();
         uiStopWatch = new UIStopWatch(e -> {
             timePassed.set(uiStopWatch.getSeconds());
-            if (timePassed.get() >= 60) {
+            if (timePassed.get() >= 5) {
                 uiStopWatch.stop();
                 randomTimer.stop();
-                
-
-                try {
-                    FileWriter writer = new FileWriter("scoreData.txt");
-                    writer.write(Integer.toString(score));
-                    writer.close();
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
-
+                orgDisplay.setScore(0, score);
+                JOptionPane.showMessageDialog(gamePanel, "Game Over! Your score is: " + score, 
+            "Game Over", JOptionPane.INFORMATION_MESSAGE);
 
 
                 if (this.onExit != null) {

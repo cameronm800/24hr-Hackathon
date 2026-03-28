@@ -1,6 +1,9 @@
 package Game2;
 
 import javax.swing.*;
+
+import GameUI.Display;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.Random;
 
 public class MemoryPlus {
     private int[][] grid;
+    private Display display;
     private Color[][] colors;  // Use Color objects instead of integers
     private final int UISize = 580;  // Size of the entire UI (game panel)
     private final int cardSize = 80;  // Size of each card
@@ -31,7 +35,8 @@ public class MemoryPlus {
 
     private Runnable onGameOver;  // Runnable to return to the menu after the game ends
 
-    public MemoryPlus(int k, int r, Runnable onGameOver) {
+    public MemoryPlus(int k, int r, Runnable onGameOver, Display display) {
+        this.display = display;
         this.grid = new int[k][k];
         this.colors = new Color[k][k];  // Use Color objects for the colors
         this.flippedCards = new boolean[k][k]; // Track flipped cards
@@ -249,13 +254,13 @@ public class MemoryPlus {
     public void saveGameResult() {
         long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;  // Time in seconds
         // Here you can implement a database connection to store score and time
-        System.out.println("Game Over! Score: " + score + ", Time: " + elapsedTime + "s");
     }
 
     // Show a game over message and stop the game
     public void endGame() {
         JOptionPane.showMessageDialog(gamePanel, "Game Over! Your score is: " + score, 
             "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        display.setScore(1, score);
         
         // Call the onGameOver Runnable to go back to the menu
         if (onGameOver != null) {
