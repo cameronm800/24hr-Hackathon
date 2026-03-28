@@ -1,3 +1,7 @@
+package Testing;
+
+import General.Timer;
+
 public class Main {
     public static void main(String[] args) {
         Timer timer = new Timer();

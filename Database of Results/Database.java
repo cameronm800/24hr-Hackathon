@@ -13,7 +13,7 @@ public class Database {
         String dbUrl = "jbdc:sqlite:" + args[0];
 
         try (Connection connection = DriverManager.getConnection(dbUrl);) {
-            // ijfgdps[oepsdijxgozp0[esfdijgudzosefzpdjgzhhesofdpojxgjosspjidfgbdps[pezodjikfgdopsejdifxg\ejo'hbpiiiiiiiiii                            ewpijfsd'\f]]]
+            createTable(connection);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -25,7 +25,9 @@ public class Database {
                 """
                 CREATE TABLE IF NOT EXISTS gameData (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-                )      
+                username VARCHAR(100) NOT NULL,
+                testDuration DATE NOT NULL,
+                score INTEGER NOT NULL);      
                 """);
             }
         }

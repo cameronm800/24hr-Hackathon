@@ -1,4 +1,4 @@
-package Game_1_Reaction_Speed;
+package Game1;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -11,12 +11,11 @@ public class Square {
     private final int UISize = 600;
 
     private int[] coords = new int[2];
-    private int squareSize = UISize / 10;
+    private int squareSize = UISize / 2;
 
     private JPanel gamePanel;
 
     public Square() {
-
         changePlacement();
         gamePanel = new JPanel() {
             protected void paintComponent(Graphics g) {

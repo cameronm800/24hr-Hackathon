@@ -1,8 +1,9 @@
 package GameUI;
-import Game_1_Reaction_Speed.Square;
-
 import javax.swing.*;
 import javax.swing.border.*;
+
+import Game1.Square;
+
 import java.awt.*;
 import java.awt.event.*;
 
