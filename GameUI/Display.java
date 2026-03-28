@@ -4,7 +4,6 @@ import javax.swing.border.*;
 
 import Game1.Square;
 import Game2.MemoryPlus;
-import Game3.Game3UI;
 import Game3.TypingTester;
 
 import java.awt.*;
@@ -117,12 +116,11 @@ public class Display {
     }
 
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu());
+        MemoryPlus mem = new MemoryPlus(12, 1, () -> createMenu());
         setScreen(mem.getGamePanel());
     }
 
     private void startGameThree() {
-        setScreen(new Game3UI());
     }
 
     private void setScreen(Component component) {

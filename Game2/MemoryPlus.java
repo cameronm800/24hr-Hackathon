@@ -267,4 +267,14 @@ public class MemoryPlus {
     public JPanel getGamePanel() {
         return gamePanel;
     }
+
+    // Getter for score
+    public int getScore() {
+        return score;
+    }
+
+    // Getter for time spent
+    public long getTimeSpent() {
+        return (System.currentTimeMillis() - startTime) / 1000;  // Return time in seconds
+    }
 }
