@@ -1,11 +1,11 @@
 package GameUI;
-import javax.swing.*;
-import javax.swing.border.*;
 
-import Game1.Square;
-import Game2.MemoryPlus;
+import Game1.*;
+import Game2.*;
 import Game3.*;
 
+import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -50,7 +50,6 @@ public class Display {
     }
 
     private void resetScore() {
-
         try {
             FileWriter writer = new FileWriter("scoreData.txt");
             writer.write("0");
@@ -59,7 +58,6 @@ public class Display {
             System.out.println(ex.getMessage());
         }
     }
-
 
     public void createMenu() {
         frame.getContentPane().removeAll();
@@ -79,7 +77,7 @@ public class Display {
             buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], this::startGameOne), gbc);
         }
         else {
-             buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], () -> {}), gbc);
+            buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], () -> {}), gbc);
         }
 
         gbc.gridx = 1;
@@ -98,38 +96,88 @@ public class Display {
             buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], () -> {}), gbc);
         }
 
+        // Once all games are done, add a username field and a submit button
         if (isDone[0] && isDone[1] && isDone[2]) {
-            buttonContainer.removeAll();
-            buttonContainer.add(createGameGroup("Submit", "", this::submit), gbc);
+            buttonContainer.removeAll();  // Remove all game buttons
+
+            // Create username input and submit button
+            buttonContainer.add(createUsernameInput(), gbc);
         }
-        
+
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
     }
-    
-    
+
+    private JPanel createUsernameInput() {
+        JPanel usernamePanel = new JPanel();
+        usernamePanel.setLayout(new BoxLayout(usernamePanel, BoxLayout.Y_AXIS));
+        usernamePanel.setOpaque(false);
+
+        // Create label and input for username
+        JLabel usernameLabel = new JLabel("Enter Username:");
+        usernameLabel.setForeground(Color.GRAY);
+        usernameLabel.setFont(LABEL_FONT);
+        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JTextField usernameField = new JTextField();
+        usernameField.setMaximumSize(new Dimension(280, 40));
+        usernameField.setPreferredSize(new Dimension(280, 40));
+        usernameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Create the submit button
+        JButton submitButton = new JButton("Submit");
+        submitButton.setFont(BUTTON_FONT);
+        submitButton.setForeground(ACCENT_CYAN);
+        submitButton.setBackground(TOOLBAR_BG);
+        submitButton.setFocusPainted(false);
+        submitButton.setEnabled(false); // Initially disabled
+        submitButton.setMaximumSize(new Dimension(280, 50));
+        submitButton.setPreferredSize(new Dimension(280, 50));
+        submitButton.setBorder(new LineBorder(ACCENT_CYAN, 2));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Enable submit button only if username is entered
+        usernameField.addCaretListener(e -> {
+            String username = usernameField.getText().trim();
+            submitButton.setEnabled(!username.isEmpty());
+        });
+
+        // Submit button action
+        submitButton.addActionListener(e -> {
+            String username = usernameField.getText().trim();
+            System.out.println("Username submitted: " + username);
+            // Add your logic for handling the username submission
+        });
+
+        usernamePanel.add(usernameLabel);
+        usernamePanel.add(usernameField);
+        usernamePanel.add(submitButton);
+
+        return usernamePanel;
+    }
+
     private JPanel createGameGroup(String btnText, String labelText, Runnable action) {
         JPanel group = new JPanel();
         group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
         group.setOpaque(false);
-        
+
         JButton button = createMenuButton(btnText);
         button.addActionListener(e -> action.run());
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         JLabel label = new JLabel(labelText);
         label.setForeground(Color.GRAY);
         label.setFont(LABEL_FONT);
         label.setBorder(new EmptyBorder(10, 0, 0, 0));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         group.add(button);
         group.add(label);
         return group;
     }
-    
+
     private JButton createMenuButton(String text) {
         JButton button = new JButton(text);
         button.setFont(BUTTON_FONT);
@@ -140,7 +188,7 @@ public class Display {
         button.setPreferredSize(new Dimension(280, 150));
         button.setBorder(new LineBorder(ACCENT_CYAN, 2));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
+
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(HOVER_COLOR);
@@ -153,24 +201,21 @@ public class Display {
         });
         return button;
     }
-    
+
     private void startGameOne() {
         Square square = new Square(this::createMenu, this);
         setScreen(square.getGamePanel());
     }
     
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(8, 1, () -> createMenu(), this);
+        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
     
     private void startGameThree() {
         setScreen(new Game3UI(this::createMenu, this));
     }
-    private void submit() {
-        System.out.println("done");
-    }
-    
+
     private void setScreen(Component component) {
         frame.getContentPane().removeAll();
         frame.setLayout(new BorderLayout());
