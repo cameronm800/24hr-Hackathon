@@ -4,13 +4,12 @@ import javax.swing.border.*;
 
 import Game1.Square;
 import Game2.MemoryPlus;
-import Game3.TypingTester;
 
 import java.awt.*;
 import java.awt.event.*;
 
 public class Display {
-    private JFrame frame;
+    private final JFrame frame;
 
     private final Color DARK_BG = new Color(45, 45, 45);
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
@@ -18,63 +17,72 @@ public class Display {
     private final Color HOVER_COLOR = new Color(60, 60, 60);
 
     private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
-    private static final Font MENU_ITEM_FONT = new Font("SansSerif", Font.PLAIN, 13);
-    private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 28);
+    private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 20);
+    private static final Font LABEL_FONT = new Font("SansSerif", Font.ITALIC, 14);
 
     public Display() {
         this.frame = new JFrame("Isle Be Better");
-        this.frame.setSize(800, 600);
+        this.frame.setSize(1000, 600);
         this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private JLabel createTitle(String text) {
-        JLabel title = new JLabel(text, SwingConstants.CENTER);
+    private JLabel createTitle() {
+        JLabel title = new JLabel("Isle Be Better", SwingConstants.CENTER);
         title.setForeground(ACCENT_CYAN);
-        title.setFont(new Font("SansSerif", Font.BOLD, 48));
-        title.setBorder(new EmptyBorder(50, 0, 0, 0));
+        title.setFont(TITLE_FONT);
+        title.setBorder(new EmptyBorder(100, 0, 50, 0));
         return title;
     }
+
     public void createMenu() {
-        JLabel title = createTitle("Isle Be Better");
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setOpaque(false);
+        frame.getContentPane().removeAll();
+        frame.setLayout(new BorderLayout());
 
-        JButton optionButton = createMenuButton("OPTIONS");
-        JPopupMenu popupMenu = createDropdownMenu(optionButton);
+        JLabel title = createTitle();
 
-        optionButton.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                popupMenu.show(optionButton, 0, optionButton.getHeight());
-            }
-        });
+        JPanel buttonContainer = new JPanel(new GridBagLayout());
+        buttonContainer.setOpaque(false);
 
-        centerPanel.add(optionButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 20, 0, 20);
+        gbc.gridy = 0;
 
-        setScreen(centerPanel);
+        gbc.gridx = 0;
+        buttonContainer.add(createGameGroup("REACTION SPEED", "EDP's might", this::startGameOne), gbc);
+
+        gbc.gridx = 1;
+        buttonContainer.add(createGameGroup("MEMORY GAME", "diddy's best", this::startGameTwo), gbc);
+
+        gbc.gridx = 2;
+        buttonContainer.add(createGameGroup("TYPING GAME", "epstein's favourite", this::startGameThree), gbc);
+
         frame.add(title, BorderLayout.NORTH);
+        frame.add(buttonContainer, BorderLayout.CENTER);
 
+        frame.revalidate();
+        frame.repaint();
     }
 
-    private JMenuItem createStyledItem(String text, Runnable action) {
-        JMenuItem item = new JMenuItem(text);
-        item.setPreferredSize(new Dimension(180, 40));
-        item.setBackground(DARK_BG);
-        item.setForeground(Color.WHITE);
-        item.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        item.setBorder(new EmptyBorder(0, 15, 0, 0));
+    private JPanel createGameGroup(String btnText, String labelText, Runnable action) {
+        JPanel group = new JPanel();
+        group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
+        group.setOpaque(false);
 
-        item.addActionListener(e -> {
-            if(text.contains("Quit")) System.exit(0);
-            else JOptionPane.showMessageDialog(frame, text + " Selected");
+        JButton button = createMenuButton(btnText);
+        button.addActionListener(e -> action.run());
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-            if (action != null) {
-                action.run();
-            }
-        });
+        JLabel label = new JLabel(labelText);
+        label.setForeground(Color.GRAY);
+        label.setFont(LABEL_FONT);
+        label.setBorder(new EmptyBorder(10, 0, 0, 0));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        return item;
+        group.add(button);
+        group.add(label);
+        return group;
     }
 
     private JButton createMenuButton(String text) {
@@ -83,26 +91,22 @@ public class Display {
         button.setForeground(ACCENT_CYAN);
         button.setBackground(TOOLBAR_BG);
         button.setFocusPainted(false);
-        button.setBorder(new EmptyBorder(10, 20, 10, 20));
+        button.setMaximumSize(new Dimension(280, 150));
+        button.setPreferredSize(new Dimension(280, 150));
+        button.setBorder(new LineBorder(ACCENT_CYAN, 2));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         button.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { button.setBackground(HOVER_COLOR); }
-            public void mouseExited(MouseEvent e) { button.setBackground(TOOLBAR_BG); }
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(HOVER_COLOR);
+                button.setBorder(new LineBorder(Color.WHITE, 2));
+            }
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(TOOLBAR_BG);
+                button.setBorder(new LineBorder(ACCENT_CYAN, 2));
+            }
         });
         return button;
-    }
-
-    private JPopupMenu createDropdownMenu(JButton owner) {
-        JPopupMenu menu = new JPopupMenu();
-        menu.setBorder(new LineBorder(Color.BLACK));
-        menu.setBackground(DARK_BG);
-
-        menu.add(createStyledItem("Reaction Speed", this::startGameOne));
-        menu.add(createStyledItem("Memory Game", this::startGameTwo));
-        menu.add(createStyledItem("Typing Game", this::startGameThree));
-        menu.addSeparator();
-        menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
-        return menu;
     }
 
     private void startGameOne() {
@@ -117,6 +121,8 @@ public class Display {
     }
 
     private void startGameThree() {
+        //TypingTester typing = new TypingTester(this::createMenu);
+        //setScreen(typing.getGamePanel());
     }
 
     private void setScreen(Component component) {
