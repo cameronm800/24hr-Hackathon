@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.BorderLayout;
 
 public class GameWindow extends JFrame {
     public GameWindow(MemoryPlus memory) {
