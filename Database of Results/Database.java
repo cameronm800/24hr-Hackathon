@@ -33,7 +33,8 @@ public class Database {
 
         }
     }
-    public static void insertTable(Connection connection, String username, Date dateOfTest, int score) throws SQLException {
+
+    public static void insertTable(Connection connection, String username, Date dateOfTest, int score) {
         try {PreparedStatement prep = connection.prepareStatement(
             """
             INSERT INTO gameData(username, testDuration, score)
@@ -44,6 +45,19 @@ public class Database {
             prep.setDate(2, dateOfTest);
             prep.setInt(3, score);
             prep.executeQuery();
+        }
+        catch (Exception e) {
+
+        }
+    }
+
+    public static void deleteAll(Connection connection) {
+        try (Statement statement = connection.createStatement();) {
+            statement.executeUpdate(
+            """
+                DELETE * FROM gameData
+            """
+            );
         }
         catch (Exception e) {
 
