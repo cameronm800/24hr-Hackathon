@@ -1,17 +1,15 @@
 package Game1;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.Random;
 public class Square {
     private boolean isRed = true;
     private int score = 0;
-    private final int UISize = 100;
+    private final int UISize = 580;
 
     private int[] coords = new int[2];
-    private int squareSize = UISize / 10;
+    private int squareSize = UISize / 2;
 
     private JPanel gamePanel;
 
@@ -61,8 +59,8 @@ public class Square {
         Random r = new Random();
         //sets x and y to random point
 
-        this.coords[0] = r.nextInt(Math.max(1, 800 - squareSize));
-        this.coords[1] = r.nextInt(Math.max(1, 800 - squareSize));
+        this.coords[0] = r.nextInt(Math.max(1, 580 - squareSize));
+        this.coords[1] = r.nextInt(Math.max(1, 580 - squareSize));
 
        // this.coords[0] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
         //this.coords[1] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
