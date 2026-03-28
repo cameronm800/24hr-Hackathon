@@ -24,6 +24,7 @@ public class Display {
     public Display() {
         this.frame = new JFrame("Isle Be Better");
         this.frame.setSize(800, 600);
+        this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
