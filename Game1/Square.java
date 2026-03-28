@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class Square {
     private int score = 0;
-    private final int UISize = 800;
+    private final int UISize = 1000;
 
     private JPanel gamePanel;
     private JLabel scoreLabel;
@@ -23,8 +23,6 @@ public class Square {
     private List<SquareEntity> squares = new ArrayList<>();
 
     public Square() {
-        addNewSquare();
-
         gamePanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -40,7 +38,7 @@ public class Square {
 
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(800, 600);
+                return new Dimension(800, 800);
             }
         };
         gamePanel.setLayout(null);
@@ -51,6 +49,8 @@ public class Square {
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         scoreLabel.setBounds(20, 20, 150, 30);
         gamePanel.add(scoreLabel);
+
+        addNewSquare();
 
         randomTimer = new Timer(1000, e -> {
             toggleColorRandomly();
@@ -100,15 +100,19 @@ public class Square {
 
     private void addNewSquare() {
         SquareEntity newSq = new SquareEntity();
-        newSq.squareSize = UISize / 8;
+        newSq.squareSize = UISize / 5;
         newSq.isRed = true;
         changePlacement(newSq);
         squares.add(newSq);
     }
 
     private void changePlacement(SquareEntity sq) {
-        sq.coords[0] = random.nextInt(Math.max(1, UISize - sq.squareSize));
-        sq.coords[1] = random.nextInt(Math.max(1, UISize - sq.squareSize));
+
+        int panelWidth = gamePanel.getWidth();
+        int panelHeight = gamePanel.getHeight();
+
+        sq.coords[0] = random.nextInt(Math.max(1, panelWidth - sq.squareSize));
+        sq.coords[1] = random.nextInt(Math.max(1, panelHeight - sq.squareSize));
     }
 
     private void toggleColorRandomly() {

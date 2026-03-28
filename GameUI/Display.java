@@ -25,6 +25,7 @@ public class Display {
     public Display() {
         this.frame = new JFrame("Isle Be Better");
         this.frame.setSize(800, 600);
+        this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -111,9 +112,9 @@ public class Display {
     }
 
     private void startGameTwo() {
-    MemoryPlus mem = new MemoryPlus(4, 1);  // Adjust the size as per your requirements (e.g., 4x4 grid)
-    mem.createGamePanel();  // Create the game panel
-    setScreen(mem.getGamePanel());  // Display the game panel on the frame
+    MemoryPlus mem = new MemoryPlus(10, 1);
+    mem.createGamePanel();
+    setScreen(mem.getGamePanel());
     }
 
     private void startGameThree() {
