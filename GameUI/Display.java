@@ -1,8 +1,8 @@
-package GameUI;
+//package GameUI;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
-import Game1.*;
+//import Game1.*;
 public class Display {
     private JFrame frame;
 
