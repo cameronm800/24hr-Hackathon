@@ -111,7 +111,10 @@ setScreen(panel);
         setScreen(square.getGamePanel());
     }
 
-
+    private void startGameThree() {
+        System.out.println("hi");
+        setScreen(new Game3UI());
+    }
 
 
 
