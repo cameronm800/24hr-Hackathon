@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -7,7 +5,6 @@ import java.awt.event.*;
 
 public class Display {
     private JFrame frame;
-    // Modern Color Palette
     private final Color DARK_BG = new Color(45, 45, 45);
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
