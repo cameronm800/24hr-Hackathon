@@ -98,8 +98,8 @@ public class Display {
         menu.setBackground(DARK_BG);
 
         menu.add(createStyledItem("Reaction Speed", this::startGameOne));
-        menu.add(createStyledItem("Game 2", this::startGameTwo));
-        menu.add(createStyledItem("Game 3", this::startGameThree));
+        menu.add(createStyledItem("Memory Game", this::startGameTwo));
+        menu.add(createStyledItem("Typing Game", this::startGameThree));
         menu.addSeparator();
         menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
         return menu;
@@ -111,7 +111,7 @@ public class Display {
     }
 
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(12, 1);
+        MemoryPlus mem = new MemoryPlus(2, 1);
         mem.createGamePanel();
         setScreen(mem.getGamePanel());
     }
