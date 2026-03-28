@@ -1,64 +1,84 @@
-//package GameUI;
+
+
 import javax.swing.*;
-import java.awt.*;
 import javax.swing.border.*;
-//import Game1.*;
+import java.awt.*;
+import java.awt.event.*;
+
 public class Display {
     private JFrame frame;
+    // Modern Color Palette
+    private final Color DARK_BG = new Color(45, 45, 45);
+    private final Color ACCENT_CYAN = new Color(0, 210, 255);
+    private final Color TOOLBAR_BG = new Color(33, 33, 33);
+    private final Color HOVER_COLOR = new Color(60, 60, 60);
 
     public Display() {
-        this.frame = new JFrame("Display");
+        this.frame = new JFrame("Welcome!");
         this.frame.setSize(800, 600);
-        this.frame.getContentPane().setBackground(new Color(60, 63, 65));
+        this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void createMenu() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setBackground(TOOLBAR_BG);
+        toolBar.setFloatable(false);
+        toolBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        toolBar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 5));
 
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(new Color(45, 45, 45));
-        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
-        menuBar.setPreferredSize(new Dimension(0, 50));
-        JMenu menu = new JMenu("Menu");
-        menu.setForeground(new Color(0, 191, 255));
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setBorder(new LineBorder(Color.BLACK));
+        popupMenu.setBackground(DARK_BG);
 
-        JMenuItem m1 = new JMenuItem("Game 1");
-        JMenuItem m2 = new JMenuItem("Game 2");
-        JMenuItem m3 = new JMenuItem("Game 3");
-        JMenuItem m4 = new JMenuItem("Exit");
-        JMenuItem m5 = new JMenuItem("Quit");
+        popupMenu.add(createStyledItem("Game 1"));
+        popupMenu.add(createStyledItem("Game 2"));
+        popupMenu.addSeparator();
+        popupMenu.add(createStyledItem("Quit Program"));
 
-        JMenuItem[] items = new JMenuItem[]{m1,m2,m3,m4,m5};
+        JButton button = new JButton("OPTIONS ▾");
+        button.setFont(new Font("SansSerif", Font.BOLD, 14));
+        button.setForeground(ACCENT_CYAN);
+        button.setBackground(TOOLBAR_BG);
+        button.setFocusPainted(false);
+        button.setBorder(new EmptyBorder(10, 20, 10, 20));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        for (JMenuItem item : items) {
-            styleItem(item);
-            menu.add(item);
-        }
+        button.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                popupMenu.show(button, 0, button.getHeight());
+            }
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(HOVER_COLOR);
+            }
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(TOOLBAR_BG);
+            }
+        });
 
-        menuBar.add(Box.createHorizontalGlue());
-        menuBar.add(menu);
-        menuBar.add(Box.createHorizontalGlue());
-
-        frame.setJMenuBar(menuBar);
+        toolBar.add(button);
+        frame.getContentPane().add(toolBar, BorderLayout.NORTH);
     }
 
-    private void styleItem(JMenuItem item) {
-        item.setFont(item.getFont().deriveFont(item.getFont().getStyle() | Font.BOLD));
-        item.setBackground(new Color(70, 70, 70));
+    private JMenuItem createStyledItem(String text) {
+        JMenuItem item = new JMenuItem(text);
+        item.setPreferredSize(new Dimension(180, 40));
+        item.setBackground(DARK_BG);
         item.setForeground(Color.WHITE);
-        item.setPreferredSize(new Dimension(150, 40));
-        item.setBorder(new EmptyBorder(5, 10, 5, 10));
+        item.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        item.setBorder(new EmptyBorder(0, 15, 0, 0));
+
+        item.addActionListener(e -> {
+            if(text.contains("Quit")) System.exit(0);
+            else JOptionPane.showMessageDialog(frame, text + " Selected");
+        });
+
+        return item;
     }
 
-    public void addLabel() {
-        JLabel label = new JLabel();
-        label.setText("HI");
-        frame.add(label);
-    }
     public void showWindow() {
         createMenu();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
