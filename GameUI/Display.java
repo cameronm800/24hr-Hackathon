@@ -106,7 +106,7 @@ public class Display {
     }
 
     private void startGameOne() {
-        Square square = new Square();
+        Square square = new Square(this::createMenu);
         setScreen(square.getGamePanel());
     }
 
