@@ -8,7 +8,7 @@ import java.util.Random;
 public class Square {
     private boolean isRed = true;
     private int score = 0;
-    private final int UISize = 100;
+    private final int UISize = 600;
 
     private int[] coords = new int[2];
     private int squareSize = UISize / 10;
@@ -16,6 +16,8 @@ public class Square {
     private JPanel gamePanel;
 
     public Square() {
+
+        changePlacement();
         gamePanel = new JPanel() {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -26,11 +28,29 @@ public class Square {
                 g.fillRect(coords[0], coords[1], squareSize, squareSize);
             }
 
-            protected Dimension getPrefferredSize() {
+            @Override
+            public Dimension getPreferredSize() {
                 return new Dimension(800,600);
             }
         };
         gamePanel.setLayout(null);
+
+        gamePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int mousePosX = e.getX();
+                int mousePosY = e.getY();
+
+                if (mousePosX >= coords[0] && mousePosX <= coords[0] + squareSize && mousePosY >= coords[1] && mousePosY <= coords[1] + squareSize) {
+                    Pressed();
+                    isRed = !isRed;
+                    changePlacement();
+                    gamePanel.repaint();
+                } else {
+                    System.out.println("H");
+                }
+            }
+        });
     }
 
 
@@ -62,7 +82,7 @@ public class Square {
         //sets x and y to random point
 
         this.coords[0] = r.nextInt(Math.max(1, 800 - squareSize));
-        this.coords[1] = r.nextInt(Math.max(1, 800 - squareSize));
+        this.coords[1] = r.nextInt(Math.max(1, 600 - squareSize));
 
        // this.coords[0] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
         //this.coords[1] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
