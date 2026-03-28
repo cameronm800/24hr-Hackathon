@@ -2,7 +2,6 @@ package Game1;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.Random;
 public class Square {
     private boolean isRed = true;
@@ -13,9 +12,11 @@ public class Square {
     private int squareSize = UISize / 2;
 
     private JPanel gamePanel;
+    private JLabel scoreLabel;
 
     public Square() {
         gamePanel = new JPanel() {
+
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(Color.BLACK);
@@ -30,6 +31,15 @@ public class Square {
             }
         };
         gamePanel.setLayout(null);
+        gamePanel.setBackground(Color.BLACK);
+        System.out.println("HIasdf");
+
+        scoreLabel = new JLabel("Score: 0");
+        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        scoreLabel.setBounds(20, 20, 150, 30);
+        gamePanel.add(scoreLabel);
+
         gamePanel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int mousePosX = e.getX();
@@ -39,12 +49,16 @@ public class Square {
                     Pressed();
                     isRed = !isRed;
                     changePlacement();
+
+                    scoreLabel.setText("Score" + getScore());
+                    scoreLabel.repaint();
                     gamePanel.repaint();
                 } else {
-                    System.out.println("HI");
+                    System.out.println("wHdadfI");
                 }
             }
         });
+        System.out.println(score);
     }
 
 
