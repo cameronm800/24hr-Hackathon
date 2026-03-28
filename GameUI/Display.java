@@ -23,6 +23,10 @@ public class Display {
 
     public Display() {
         this.frame = new JFrame("Isle Be Better");
+<<<<<<< HEAD
+=======
+        this.frame.setSize(800, 600);
+>>>>>>> 5e1f3623fd555c3494135b000391c5dddfbcbc7b
         this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,7 +110,6 @@ public class Display {
 
     private void startGameOne() {
         Square square = new Square();
-        square.changePlacement();
         setScreen(square.getGamePanel());
     }
 
