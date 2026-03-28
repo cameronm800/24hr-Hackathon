@@ -14,7 +14,7 @@ public class Display {
     private final Color HOVER_COLOR = new Color(60, 60, 60);
 
     public Display() {
-        this.frame = new JFrame("Welcome!");
+        this.frame = new JFrame("Name of the thing");
         this.frame.setSize(800, 600);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,9 +25,8 @@ public class Display {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.BLACK);
 
-        JLabel title = new JLabel("Welcom!!!", SwingConstants.CENTER);
+        JLabel title = new JLabel("Name of the thing", SwingConstants.CENTER);
         title.setForeground(new Color(0, 210, 255));
-        title.setBorder(new EmptyBorder(20, 0, 10, 0));
 
         JToolBar toolBar = new JToolBar();
         toolBar.setBackground(TOOLBAR_BG);
@@ -41,6 +40,7 @@ public class Display {
 
         popupMenu.add(createStyledItem("Game 1"));
         popupMenu.add(createStyledItem("Game 2"));
+        popupMenu.add(createStyledItem("Game 3"));
         popupMenu.addSeparator();
         popupMenu.add(createStyledItem("Quit Program"));
 
