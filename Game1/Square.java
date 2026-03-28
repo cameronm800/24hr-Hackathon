@@ -61,7 +61,7 @@ public class Square {
                     isRed = !isRed;
                     changePlacement();
 
-                    scoreLabel.setText("Score" + getScore());
+                    scoreLabel.setText("Score: " + getScore());
                     scoreLabel.repaint();
                     gamePanel.repaint();
                 }
