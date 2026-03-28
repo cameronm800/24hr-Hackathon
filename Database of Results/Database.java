@@ -3,7 +3,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.SQLException;
 
-public class jdbc {
+public class Database {
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("We need the database file as an argument.");
@@ -17,24 +17,16 @@ public class jdbc {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
 
         private static void createTable(Connection connection) throws SQLException {
             try (Statement statement = connection.createStatement();) {
-                statement.executeUpdate("""
+                statement.executeUpdate(
+                """
                 CREATE TABLE IF NOT EXISTS gameData (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-                
-                
-                
-                
-                )
-                
-                
-                
-                
-                
-                """)
+                )      
+                """);
             }
         }
     }
-}
