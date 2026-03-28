@@ -109,30 +109,27 @@ public class Display {
         frame.repaint();
     }
     
-    private void submit() {
-        System.out.println("done");
-    }
-
+    
     private JPanel createGameGroup(String btnText, String labelText, Runnable action) {
         JPanel group = new JPanel();
         group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
         group.setOpaque(false);
-
+        
         JButton button = createMenuButton(btnText);
         button.addActionListener(e -> action.run());
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        
         JLabel label = new JLabel(labelText);
         label.setForeground(Color.GRAY);
         label.setFont(LABEL_FONT);
         label.setBorder(new EmptyBorder(10, 0, 0, 0));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        
         group.add(button);
         group.add(label);
         return group;
     }
-
+    
     private JButton createMenuButton(String text) {
         JButton button = new JButton(text);
         button.setFont(BUTTON_FONT);
@@ -143,7 +140,7 @@ public class Display {
         button.setPreferredSize(new Dimension(280, 150));
         button.setBorder(new LineBorder(ACCENT_CYAN, 2));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
+        
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(HOVER_COLOR);
@@ -156,21 +153,24 @@ public class Display {
         });
         return button;
     }
-
+    
     private void startGameOne() {
         Square square = new Square(this::createMenu, this);
         setScreen(square.getGamePanel());
     }
-
+    
     private void startGameTwo() {
         MemoryPlus mem = new MemoryPlus(8, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
-
+    
     private void startGameThree() {
         setScreen(new Game3UI(this::createMenu, this));
     }
-
+    private void submit() {
+        System.out.println("done");
+    }
+    
     private void setScreen(Component component) {
         frame.getContentPane().removeAll();
         frame.setLayout(new BorderLayout());
