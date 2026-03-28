@@ -1,41 +1,44 @@
 package Game1;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 public class Square {
     private boolean isRed = true;
     private int score = 0;
-    private final int UISize = 600;
+    private final int UISize = 580;
 
     private int[] coords = new int[2];
     private int squareSize = UISize / 2;
 
     private JPanel gamePanel;
+    private JLabel scoreLabel;
 
     public Square() {
-        changePlacement();
         gamePanel = new JPanel() {
+
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.BLACK);
-                g.fillRect(0, 0, getWidth(), getHeight());
-
                 g.setColor(isRed ? Color.RED : Color.GREEN);
                 g.fillRect(coords[0], coords[1], squareSize, squareSize);
             }
 
-            @Override
             public Dimension getPreferredSize() {
                 return new Dimension(800,600);
             }
         };
         gamePanel.setLayout(null);
+        gamePanel.setBackground(Color.BLACK);
+        System.out.println("HIasdf");
+
+        scoreLabel = new JLabel("Score: 0");
+        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        scoreLabel.setBounds(20, 20, 150, 30);
+        gamePanel.add(scoreLabel);
 
         gamePanel.addMouseListener(new MouseAdapter() {
-            @Override
             public void mousePressed(MouseEvent e) {
                 int mousePosX = e.getX();
                 int mousePosY = e.getY();
@@ -44,12 +47,16 @@ public class Square {
                     Pressed();
                     isRed = !isRed;
                     changePlacement();
+
+                    scoreLabel.setText("Score" + getScore());
+                    scoreLabel.repaint();
                     gamePanel.repaint();
                 } else {
-                    System.out.println("H");
+                    System.out.println("wHdadfI");
                 }
             }
         });
+        System.out.println(score);
     }
 
 
@@ -80,10 +87,10 @@ public class Square {
         Random r = new Random();
         //sets x and y to random point
 
-        this.coords[0] = r.nextInt(Math.max(1, 800 - squareSize));
-        this.coords[1] = r.nextInt(Math.max(1, 600 - squareSize));
+        this.coords[0] = r.nextInt(Math.max(1, 580 - squareSize));
+        this.coords[1] = r.nextInt(Math.max(1, 580 - squareSize));
 
-       // this.coords[0] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
+        // this.coords[0] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
         //this.coords[1] = r.nextInt((int) (-UISize * (score / 5)), (int) UISize * (score / 5));
     }
 
