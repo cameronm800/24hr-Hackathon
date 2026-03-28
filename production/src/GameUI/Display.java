@@ -2,6 +2,7 @@ package GameUI;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
+import Game1.*;
 public class Display {
     private JFrame frame;
 
@@ -52,5 +53,9 @@ public class Display {
         createMenu();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    public static void showWindow() {
+
     }
 }
