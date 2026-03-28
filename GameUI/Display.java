@@ -111,7 +111,7 @@ public class Display {
     }
 
     private void startGameTwo() {
-    MemoryPlus mem = new MemoryPlus(4, 1);
+    MemoryPlus mem = new MemoryPlus(10, 1);
     mem.createGamePanel();
     setScreen(mem.getGamePanel());
     }
