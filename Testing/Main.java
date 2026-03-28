@@ -1,10 +1,10 @@
 package Testing;
 /// /
-import General.Timer;
+import General.UIStopWatch;
 
 public class Main {
     public static void main(String[] args) {
-        Timer timer = new Timer();
+        UIStopWatch timer = new UIStopWatch();
         while (true) {
             System.out.println(timer.timeSinceStart());
             try {

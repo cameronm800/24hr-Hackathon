@@ -3,10 +3,10 @@ package General;
 import java.time.Duration;
 import java.time.Instant;
 
-public class Timer {
+public class UIStopWatch {
     private Instant start;
 
-    public Timer() {
+    public UIStopWatch() {
         setStartToNow();
     }
 
