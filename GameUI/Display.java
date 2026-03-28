@@ -99,20 +99,19 @@ setScreen(panel);
 
         menu.add(createStyledItem("Reaction Speed", this::startGameOne));
         menu.add(createStyledItem("Game 2", () -> System.out.println("G2 clicked")));
+        menu.add(createStyledItem("Game 3", this::startGameThree));
         menu.addSeparator();
         menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
         return menu;
     }
 
     private void startGameOne() {
-        System.out.println("hi");
         Square square = new Square();
         square.changePlacement();
         setScreen(square.getGamePanel());
     }
 
     private void startGameThree() {
-        System.out.println("hi");
         setScreen(new Game3UI());
     }
 
