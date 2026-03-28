@@ -98,7 +98,7 @@ public class Display {
         menu.setBackground(DARK_BG);
 
         menu.add(createStyledItem("Reaction Speed", this::startGameOne));
-        menu.add(createStyledItem("Game 2", () -> System.out.println("G2 clicked")));
+        menu.add(createStyledItem("Game 2", this::startGameTwo));
         menu.add(createStyledItem("Game 3", this::startGameThree));
         menu.addSeparator();
         menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
@@ -107,12 +107,13 @@ public class Display {
 
     private void startGameOne() {
         Square square = new Square();
-        square.changePlacement();
         setScreen(square.getGamePanel());
     }
 
     private void startGameTwo() {
-        //MemoryPlus mem = new MemoryPlus();
+    MemoryPlus mem = new MemoryPlus(4, 1);  // Adjust the size as per your requirements (e.g., 4x4 grid)
+    mem.createGamePanel();  // Create the game panel
+    setScreen(mem.getGamePanel());  // Display the game panel on the frame
     }
 
     private void startGameThree() {
