@@ -1,5 +1,6 @@
 package Game3;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,14 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TypingTester {
-    List<Character> characters = new ArrayList<Character>();
-    int currentCharIndex = 0;
-    int numberWrong = 0;
+    private List<Character> characters = new ArrayList<Character>();
+    private int currentCharIndex = 0;
+    private int score = 0;
 
     public enum TypeResult {
         CORRECT,
         INCORRECT,
         COMPLETE
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public String getTypedString() {
@@ -56,14 +61,18 @@ public class TypingTester {
     }
 
     public TypeResult typeChar(char c) {
+            if (currentCharIndex >= characters.size()) {
+                return TypeResult.COMPLETE;
+            }
             if (c == characters.get(currentCharIndex)) {
                 currentCharIndex++;
+                score++;
                 if (currentCharIndex == characters.size()) {
                     return TypeResult.COMPLETE;
                 }
                 return TypeResult.CORRECT;
             } else {
-                numberWrong++;
+                score--;
                 return TypeResult.INCORRECT;
             }
     }
