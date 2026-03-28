@@ -29,11 +29,15 @@ public class MemoryPlus {
 
     private boolean showingCards = true; // Flag to show the cards for 1 second
 
-    public MemoryPlus(int k, int r) {
+    private Runnable onGameOver;  // Runnable to return to the menu after the game ends
+
+    public MemoryPlus(int k, int r, Runnable onGameOver) {
         this.grid = new int[k][k];
         this.colors = new Color[k][k];  // Use Color objects for the colors
         this.flippedCards = new boolean[k][k]; // Track flipped cards
         this.matchedCards = new boolean[k][k]; // Track matched cards
+        this.onGameOver = onGameOver;  // Store the onGameOver Runnable
+        
         this.generateGrid(k, r);  // Generate the grid and color pairs
         this.createGamePanel();  // Create the game panel
         startGameTimer();  // Start the game timer to track the elapsed time
@@ -252,7 +256,11 @@ public class MemoryPlus {
     public void endGame() {
         JOptionPane.showMessageDialog(gamePanel, "Game Over! Your score is: " + score, 
             "Game Over", JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0);  // Close the game
+        
+        // Call the onGameOver Runnable to go back to the menu
+        if (onGameOver != null) {
+            onGameOver.run();
+        }
     }
 
     // Get the game panel for display

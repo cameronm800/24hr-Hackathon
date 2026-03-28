@@ -1,3 +1,4 @@
+package Database;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -5,12 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.SQLException;
 public class Database {
-    public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("We need the database file as an argument.");
-            return;
-        }
-        String dbUrl = "jbdc:sqlite:" + args[0];
+    public static void main() {
+        String dbUrl = "jbdc:sqlite:database.db";
         try (Connection connection = DriverManager.getConnection(dbUrl);) {
             createTable(connection);
         } 
