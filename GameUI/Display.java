@@ -21,9 +21,14 @@ public class Display {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.BLACK);
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+        frame.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Name of the thing", SwingConstants.CENTER);
-        title.setForeground(new Color(0, 210, 255));
+        title.setForeground(ACCENT_CYAN);
+        title.setFont(new Font("SansSerif", Font.BOLD, 48));
+        title.setBorder(new EmptyBorder(50, 0, 0, 0));
 
         JToolBar toolBar = new JToolBar();
         toolBar.setBackground(TOOLBAR_BG);
@@ -42,7 +47,9 @@ public class Display {
         popupMenu.add(createStyledItem("Quit Program"));
 
         JButton button = new JButton("OPTIONS ▾");
-        button.setFont(new Font("SansSerif", Font.BOLD, 14));
+        button.setFont(new Font("SansSerif", Font.BOLD, 28));
+
+
         button.setForeground(ACCENT_CYAN);
         button.setBackground(TOOLBAR_BG);
         button.setFocusPainted(false);
@@ -62,9 +69,10 @@ public class Display {
         });
 
         toolBar.add(button);
-        topPanel.add(title,BorderLayout.NORTH);
-        topPanel.add(toolBar,BorderLayout.SOUTH);
-        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+        centerPanel.add(button);
+
+        frame.add(title, BorderLayout.NORTH);
+        frame.add(centerPanel, BorderLayout.CENTER);
     }
 
     private JMenuItem createStyledItem(String text) {
