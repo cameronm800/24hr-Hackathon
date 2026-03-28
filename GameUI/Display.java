@@ -14,7 +14,7 @@ public class Display {
     private final Color HOVER_COLOR = new Color(60, 60, 60);
 
     public Display() {
-        this.frame = new JFrame("Name of the thing");
+        this.frame = new JFrame("Isle Be Better");
         this.frame.setSize(800, 600);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,7 +25,7 @@ public class Display {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.BLACK);
 
-        JLabel title = new JLabel("Name of the thing", SwingConstants.CENTER);
+        JLabel title = new JLabel("Isle Be Better", SwingConstants.CENTER);
         title.setForeground(new Color(0, 210, 255));
 
         JToolBar toolBar = new JToolBar();
