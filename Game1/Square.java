@@ -96,10 +96,6 @@ public class Square {
                     System.out.println(ex.getMessage());
                 }
 
-                Database database = new Database();
-                Database.createTable(database.getConnection());
-                Database.insertTable(database.getConnection(), "H", new Date(System.currentTimeMillis()), score);
-
 
 
                 if (this.onExit != null) {
