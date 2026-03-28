@@ -14,10 +14,26 @@ public class TypingTester {
     int currentCharIndex = 0;
     int numberWrong = 0;
 
-    private enum TypeResult {
+    public enum TypeResult {
         CORRECT,
         INCORRECT,
-        OTHER
+        COMPLETE
+    }
+
+    public String getTypedString() {
+        StringBuilder typed = new StringBuilder();
+        for (int i = 0; i < currentCharIndex; i++) {
+            typed.append(characters.get(i));
+        }
+        return typed.toString();
+    }
+
+    public String getUntypedString() {
+        StringBuilder unTyped = new StringBuilder();
+        for (int i = currentCharIndex; i < characters.size(); i++) {
+            unTyped.append(characters.get(i));
+        }
+        return unTyped.toString();
     }
 
     public TypingTester(File file) throws FileNotFoundException, IOException {
@@ -36,17 +52,17 @@ public class TypingTester {
     }
 
     public TypeResult typeChar(char c) {
-        if (c == '\b') {
-            currentCharIndex--;
-            return TypeResult.OTHER;
-        } else {
-            currentCharIndex++;
+
             if (c == characters.get(currentCharIndex)) {
+                currentCharIndex++;
+                if (currentCharIndex == characters.size()) {
+                    return TypeResult.COMPLETE;
+                }
                 return TypeResult.CORRECT;
             } else {
                 numberWrong++;
                 return TypeResult.INCORRECT;
             }
-        }
     }
 }
+
