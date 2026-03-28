@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Date;
+import Database.Database;
 
 //WARNING AI SLOP!! BEWAREW!!
 
@@ -92,6 +94,12 @@ public class Square {
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                 }
+
+                Database database = new Database();
+                Database.createTable(database.getConnection());
+                Database.insertTable(database.getConnection(), "H", new Date(System.currentTimeMillis()), score);
+
+
 
                 if (this.onExit != null) {
                     this.onExit.run();
