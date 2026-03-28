@@ -85,10 +85,10 @@ public class Display {
         buttonContainer.add(createGameGroup("REACTION SPEED", reactionScoreText, this::startGameOne), gbc);
 
         gbc.gridx = 1;
-        buttonContainer.add(createGameGroup("MEMORY GAME", "diddy's best", this::startGameTwo), gbc);
+        buttonContainer.add(createGameGroup("MEMORY GAME", "score", this::startGameTwo), gbc);
 
         gbc.gridx = 2;
-        buttonContainer.add(createGameGroup("TYPING GAME", "epstein's favourite", this::startGameThree), gbc);
+        buttonContainer.add(createGameGroup("TYPING GAME", "score", this::startGameThree), gbc);
 
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
