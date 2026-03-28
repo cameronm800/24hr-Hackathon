@@ -1,7 +1,8 @@
 package Game1;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 public class Square {
     private boolean isRed = true;
@@ -13,6 +14,9 @@ public class Square {
 
     private JPanel gamePanel;
     private JLabel scoreLabel;
+
+    private Timer randomTimer;
+    private Random random = new Random();
 
     public Square() {
         gamePanel = new JPanel() {
@@ -40,6 +44,13 @@ public class Square {
         scoreLabel.setBounds(20, 20, 150, 30);
         gamePanel.add(scoreLabel);
 
+        randomTimer = new Timer(1000, e -> {
+            System.out.println("HI");
+            toggleColorRandomly();
+        });
+
+        randomTimer.start();
+
         gamePanel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 int mousePosX = e.getX();
@@ -50,11 +61,9 @@ public class Square {
                     isRed = !isRed;
                     changePlacement();
 
-                    scoreLabel.setText("Score" + getScore());
+                    scoreLabel.setText("Score: " + getScore());
                     scoreLabel.repaint();
                     gamePanel.repaint();
-                } else {
-                    System.out.println("wHdadfI");
                 }
             }
         });
@@ -79,6 +88,17 @@ public class Square {
             score +=1;
             squareSize -= (int) UISize / 100;
         }
+    }
+
+    private void toggleColorRandomly() {
+        isRed = random.nextBoolean();
+        int scoreBonus = Math.min(3500, score * 100);
+        int maxRandom = 4000 - scoreBonus;
+        int nextDelay = 500 + random.nextInt(Math.max(1, maxRandom));
+        randomTimer.setInitialDelay(nextDelay);
+        randomTimer.restart();
+        gamePanel.repaint();
+        System.out.println("HI");
     }
 
     public int getScore() {
