@@ -106,7 +106,6 @@ public class Display {
 
     private void startGameOne() {
         Square square = new Square();
-        square.changePlacement();
         setScreen(square.getGamePanel());
     }
 
