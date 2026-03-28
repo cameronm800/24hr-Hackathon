@@ -97,11 +97,7 @@ public class Display {
         menu.setBackground(DARK_BG);
 
         menu.add(createStyledItem("Reaction Speed", this::startGameOne));
-<<<<<<< HEAD
-        menu.add(createStyledItem("Game 2", this::startGameTwo));
-=======
         menu.add(createStyledItem("Game 2", () -> System.out.println("G2 clicked")));
->>>>>>> refs/remotes/origin/main
         menu.add(createStyledItem("Game 3", this::startGameThree));
         menu.addSeparator();
         menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
@@ -119,11 +115,7 @@ public class Display {
     }
 
     private void startGameThree() {
-<<<<<<< HEAD
         //setScreen(new Game3UI());
-=======
-        setScreen(new Game3UI());
->>>>>>> refs/remotes/origin/main
     }
 
 
