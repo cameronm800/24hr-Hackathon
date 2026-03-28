@@ -16,17 +16,17 @@ public class Square {
     private int score = 0;
     private final int UISize = 1000;
 
-    private JPanel gamePanel;
-    private JLabel scoreLabel;
-    private JLabel timeLabel;
-    private Timer randomTimer;
-    private Random random = new Random();
+    private final JPanel gamePanel;
+    private final JLabel scoreLabel;
+    private final JLabel timeLabel;
+    private final Timer randomTimer;
+    private final Random random = new Random();
     private long startTime = -1;
     private long duration = 5000;
     private UIStopWatch uiStopWatch;
-    private Runnable onExit;
+    private final Runnable onExit;
 
-    private List<SquareEntity> squares = new ArrayList<>();
+    private final List<SquareEntity> squares = new ArrayList<>();
 
     public Square(Runnable onExit) {
         this.onExit = onExit;
@@ -48,9 +48,12 @@ public class Square {
                 return new Dimension(800, 800);
             }
         };
+
+        //game panel
         gamePanel.setLayout(null);
         gamePanel.setBackground(Color.BLACK);
 
+        //THE SCORE LABEL
         scoreLabel = new JLabel("Score: 0");
         scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -59,19 +62,20 @@ public class Square {
 
         addNewSquare();
 
+        //Timer that deals with how often the squares changes colours
         randomTimer = new Timer(1000, e -> {
             toggleColorRandomly();
         });
         randomTimer.start();
 
-
+        //Time label
         timeLabel = new JLabel("Time: 0");
         timeLabel.setForeground(Color.WHITE);
         timeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         timeLabel.setBounds(20, 50, 150, 30);
 
+        //Timer for stopwatch label
         AtomicLong timePassed = new AtomicLong();
-
         uiStopWatch = new UIStopWatch();
         uiStopWatch = new UIStopWatch(e -> {
             timePassed.set(uiStopWatch.getSeconds());
@@ -91,6 +95,7 @@ public class Square {
 
         gamePanel.add(timeLabel);
 
+        //Checks for clicks
         gamePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -112,6 +117,7 @@ public class Square {
     }
 
     private void handleSquareClick(SquareEntity sq) {
+
         if (sq.isRed) {
             score -= 1;
             sq.squareSize += UISize / 50;
@@ -160,7 +166,7 @@ public class Square {
         }
 
         int scoreBonus = Math.min(3500, score * 100);
-        int maxRandom = 4000 - scoreBonus;
+        int maxRandom = 2000 - scoreBonus;
         int nextDelay = 500 + random.nextInt(Math.max(1, maxRandom));
         randomTimer.setInitialDelay(nextDelay);
         randomTimer.restart();
@@ -175,10 +181,26 @@ public class Square {
         return gamePanel;
     }
 
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
     //thanks gemini..
 
     // --- Inner class to hold data for individual squares ---
-    private class SquareEntity {
+    private static class SquareEntity {
         boolean isRed = true;
         int squareSize;
         int[] coords = new int[2];
