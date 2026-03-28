@@ -4,11 +4,9 @@ import javax.swing.border.*;
 
 import Game1.Square;
 import Game2.MemoryPlus;
-<<<<<<< HEAD
 import Game3.TypingTester;
-=======
+
 import Game3.*;
->>>>>>> 9461d76add91b06c74a5c4a1611f1de3a8f96d3d
 
 import java.awt.*;
 import java.awt.event.*;
@@ -154,10 +152,7 @@ public class Display {
     }
 
     private void startGameThree() {
-<<<<<<< HEAD
-=======
         setScreen(new Game3UI(this::createMenu));
->>>>>>> 9461d76add91b06c74a5c4a1611f1de3a8f96d3d
     }
 
     private void setScreen(Component component) {
