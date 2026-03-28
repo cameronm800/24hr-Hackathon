@@ -21,6 +21,14 @@ public class Display {
     }
 
     public void createMenu() {
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.BLACK);
+
+        JLabel title = new JLabel("Welcom!!!", SwingConstants.CENTER);
+        title.setForeground(new Color(0, 210, 255));
+        title.setBorder(new EmptyBorder(20, 0, 10, 0));
+
         JToolBar toolBar = new JToolBar();
         toolBar.setBackground(TOOLBAR_BG);
         toolBar.setFloatable(false);
@@ -57,7 +65,9 @@ public class Display {
         });
 
         toolBar.add(button);
-        frame.getContentPane().add(toolBar, BorderLayout.NORTH);
+        topPanel.add(title,BorderLayout.NORTH);
+        topPanel.add(toolBar,BorderLayout.SOUTH);
+        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
     }
 
     private JMenuItem createStyledItem(String text) {
