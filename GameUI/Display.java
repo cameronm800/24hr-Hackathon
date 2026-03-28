@@ -10,6 +10,12 @@ import Game3.TypingTester;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Display {
     private final JFrame frame;
 
@@ -28,6 +34,7 @@ public class Display {
         this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        resetScore();
     }
 
     private JLabel createTitle() {
@@ -36,6 +43,27 @@ public class Display {
         title.setFont(TITLE_FONT);
         title.setBorder(new EmptyBorder(100, 0, 50, 0));
         return title;
+    }
+
+    private void resetScore() {
+
+        try {
+            FileWriter writer = new FileWriter("scoreData.txt");
+            writer.write("0");
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private int getScore() {
+        int score = 0;
+        try (Scanner input = new Scanner(new File("scoreData.txt"))) {
+            score = input.nextInt();
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return score;
     }
 
     public void createMenu() {
@@ -52,7 +80,9 @@ public class Display {
         gbc.gridy = 0;
 
         gbc.gridx = 0;
-        buttonContainer.add(createGameGroup("REACTION SPEED", "EDP's might", this::startGameOne), gbc);
+
+        String reactionScoreText = Integer.toString(getScore());
+        buttonContainer.add(createGameGroup("REACTION SPEED", reactionScoreText, this::startGameOne), gbc);
 
         gbc.gridx = 1;
         buttonContainer.add(createGameGroup("MEMORY GAME", "diddy's best", this::startGameTwo), gbc);
