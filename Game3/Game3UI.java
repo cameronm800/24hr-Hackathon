@@ -24,7 +24,6 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
     public boolean dispatchKeyEvent(KeyEvent e) {
         // This fires on every single key press
         if (e.getID() == KeyEvent.KEY_PRESSED) {
-            System.out.println(e.getKeyChar());
 
             TypingTester.TypeResult typeResult = typingTester.typeChar(e.getKeyChar());
 

@@ -23,6 +23,7 @@ public class Display {
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
     private final Color HOVER_COLOR = new Color(60, 60, 60);
     private int[] scores = {0, 0, 0};
+    private boolean[] isDone = {false, false, false};
     private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
     private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 20);
     private static final Font LABEL_FONT = new Font("SansSerif", Font.ITALIC, 14);
@@ -38,6 +39,7 @@ public class Display {
 
     public void setScore(int game, int score) {
         scores[game] = score;
+        isDone[game] = true;
     }
 
     private JLabel createTitle() {
@@ -74,14 +76,32 @@ public class Display {
         gbc.gridy = 0;
 
         gbc.gridx = 0;
-
-        buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], this::startGameOne), gbc);
+        if (!isDone[0]) {
+            buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], this::startGameOne), gbc);
+        }
+        else {
+             buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], () -> {}), gbc);
+        }
 
         gbc.gridx = 1;
-        buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], this::startGameTwo), gbc);
+        if (!isDone[1]) {
+            buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], this::startGameTwo), gbc);
+        }
+        else {
+            buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], () -> {}), gbc);
+        }
 
         gbc.gridx = 2;
-        buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], this::startGameThree), gbc);
+        if (!isDone[2]) {
+            buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], this::startGameThree), gbc);
+        }
+        else {
+            buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], () -> {}), gbc);
+        }
+
+        if (!isDone[0] && !isDone[1] && !isDone[2]) {
+            System.out.println("done");
+        }
 
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
@@ -140,7 +160,7 @@ public class Display {
     }
 
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(12, 1, () -> createMenu(), this);
+        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
 
