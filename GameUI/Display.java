@@ -117,7 +117,6 @@ public class Display {
     }
 
     private void startGameThree() {
-        
     }
 
     private void setScreen(Component component) {

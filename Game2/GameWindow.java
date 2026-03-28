@@ -21,10 +21,4 @@ public class GameWindow extends JFrame {
         // Make the window visible
         setVisible(true);
     }
-
-    public static void main(String[] args) {
-        // Example: Start the game
-        MemoryPlus memory = new MemoryPlus(4, 4);  // Adjust the grid size as necessary
-        new GameWindow(memory);  // Launch the window with the memory game
-    }
 }
