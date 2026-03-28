@@ -14,6 +14,10 @@ public class Timer {
         start = Instant.now();
     }
 
+    public long getSeconds() {
+        return Duration.between(start, Instant.now()).toSeconds();
+    }
+
     public String timeSinceStart() {
         Duration duration =  Duration.between(start, Instant.now());
         String minutesStr = padNumberAsString(duration.toMinutes(), 1);
