@@ -11,7 +11,7 @@ import java.util.Random;
 public class MemoryPlus {
     private int[][] grid;
     private Color[][] colors;  // Use Color objects instead of integers
-    private final int UISize = 800;
+    private final int UISize = 580;
     private final int cardSize = 80;
     private boolean[][] flippedCards;
     private boolean[][] matchedCards; // Keep track of matched cards
@@ -23,6 +23,8 @@ public class MemoryPlus {
     private int secondFlippedRow = -1;
     private int secondFlippedCol = -1;
 
+    private boolean showingCards = true; // Flag to show the cards for 1 second
+
     public MemoryPlus(int k, int r) {
         this.grid = new int[k][k];
         this.colors = new Color[k][k];  // Use Color objects for the colors
@@ -30,6 +32,7 @@ public class MemoryPlus {
         this.matchedCards = new boolean[k][k]; // Track matched cards
         this.generateGrid(k, r);  // Generate the grid and color pairs
         this.createGamePanel();  // Create the game panel
+        startShowCardsTimer();  // Start the timer to show all cards for 1 second
     }
 
     // Generate grid with random pairs of colors
@@ -58,9 +61,6 @@ public class MemoryPlus {
         }
     }
 
-    // Generate random colors (RGB) for each pair of colors is no longer needed
-    // This method is replaced by the logic in `generateGrid`
-
     public void addNum(int i, int j, int n) {
         this.grid[i][j] = n;
     }
@@ -81,20 +81,18 @@ public class MemoryPlus {
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, getWidth(), getHeight());
 
-                // Draw the cards
+                // If we're in the showingCards phase, show all the cards
                 for (int i = 0; i < grid.length; i++) {
                     for (int j = 0; j < grid[i].length; j++) {
                         int x = i * cardSize + 20;
                         int y = j * cardSize + 20;
 
-                        if (flippedCards[i][j] || matchedCards[i][j]) {
-                            // Display card with color
+                        // Show all cards if showingCards flag is true or the card is flipped/matched
+                        if (showingCards || flippedCards[i][j] || matchedCards[i][j]) {
                             g.setColor(colors[i][j]);  // Use Color object for drawing
                             g.fillRect(x, y, cardSize, cardSize);
-                            g.setColor(Color.WHITE);
                         } else {
-                            // Draw face-down card
-                            g.setColor(Color.GRAY);
+                            g.setColor(Color.GRAY);  // Draw face-down card
                             g.fillRect(x, y, cardSize, cardSize);
                         }
                     }
@@ -166,7 +164,6 @@ public class MemoryPlus {
             // If they don't match, hide the cards again
             flippedCards[firstFlippedRow][firstFlippedCol] = false;
             flippedCards[secondFlippedRow][secondFlippedCol] = false;
-            score -= 2;
         }
 
         // Reset flipped card positions
@@ -174,6 +171,19 @@ public class MemoryPlus {
         firstFlippedCol = -1;
         secondFlippedRow = -1;
         secondFlippedCol = -1;
+    }
+
+    // Start the timer to display all cards for 1 second
+    public void startShowCardsTimer() {
+        // Show all cards for 1 second before the game starts
+        Timer timer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showingCards = false;  // Hide the cards after 1 second
+                gamePanel.repaint();   // Repaint the panel to hide the cards
+                ((Timer)e.getSource()).stop(); // Stop the timer
+            }
+        });
+        timer.start();
     }
 
     // Get the current score
