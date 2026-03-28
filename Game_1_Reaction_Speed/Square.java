@@ -1,3 +1,4 @@
+package Game_1_Reaction_Speed;
 import java.util.Random;
 public class Square {
     private boolean isRed = true;

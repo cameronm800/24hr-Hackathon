@@ -1,3 +1,6 @@
+package GameUI;
+import Game_1_Reaction_Speed.Square;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -5,10 +8,15 @@ import java.awt.event.*;
 
 public class Display {
     private JFrame frame;
+
     private final Color DARK_BG = new Color(45, 45, 45);
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
     private final Color HOVER_COLOR = new Color(60, 60, 60);
+
+    private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
+    private static final Font MENU_ITEM_FONT = new Font("SansSerif", Font.PLAIN, 13);
+    private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 28);
 
     public Display() {
         this.frame = new JFrame("Isle Be Better");
@@ -17,65 +25,35 @@ public class Display {
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void createMenu() {
-
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.BLACK);
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setOpaque(false);
-        frame.setLayout(new BorderLayout());
-
-        JLabel title = new JLabel("Isle Be Better", SwingConstants.CENTER);
+    private JLabel createTitle(String text) {
+        JLabel title = new JLabel(text, SwingConstants.CENTER);
         title.setForeground(ACCENT_CYAN);
         title.setFont(new Font("SansSerif", Font.BOLD, 48));
         title.setBorder(new EmptyBorder(50, 0, 0, 0));
+        return title;
+    }
+    public void createMenu() {
+        JLabel title = createTitle("Isle Be Better");
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
 
-        JToolBar toolBar = new JToolBar();
-        toolBar.setBackground(TOOLBAR_BG);
-        toolBar.setFloatable(false);
-        toolBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-        toolBar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 5));
+        JButton optionButton = createMenuButton("OPTIONS");
+        JPopupMenu popupMenu = createDropdownMenu(optionButton);
 
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.setBorder(new LineBorder(Color.BLACK));
-        popupMenu.setBackground(DARK_BG);
-
-        popupMenu.add(createStyledItem("Game 1"));
-        popupMenu.add(createStyledItem("Game 2"));
-        popupMenu.add(createStyledItem("Game 3"));
-        popupMenu.addSeparator();
-        popupMenu.add(createStyledItem("Quit Program"));
-
-        JButton button = new JButton("OPTIONS ▾");
-        button.setFont(new Font("SansSerif", Font.BOLD, 28));
-
-
-        button.setForeground(ACCENT_CYAN);
-        button.setBackground(TOOLBAR_BG);
-        button.setFocusPainted(false);
-        button.setBorder(new EmptyBorder(10, 20, 10, 20));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        button.addMouseListener(new MouseAdapter() {
+        optionButton.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                popupMenu.show(button, 0, button.getHeight());
-            }
-            public void mouseEntered(MouseEvent e) {
-                button.setBackground(HOVER_COLOR);
-            }
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(TOOLBAR_BG);
+                popupMenu.show(optionButton, 0, optionButton.getHeight());
             }
         });
 
-        toolBar.add(button);
-        centerPanel.add(button);
+        centerPanel.add(optionButton);
 
+        setScreen(centerPanel);
         frame.add(title, BorderLayout.NORTH);
-        frame.add(centerPanel, BorderLayout.CENTER);
+
     }
 
-    private JMenuItem createStyledItem(String text) {
+    private JMenuItem createStyledItem(String text, Runnable action) {
         JMenuItem item = new JMenuItem(text);
         item.setPreferredSize(new Dimension(180, 40));
         item.setBackground(DARK_BG);
@@ -86,9 +64,55 @@ public class Display {
         item.addActionListener(e -> {
             if(text.contains("Quit")) System.exit(0);
             else JOptionPane.showMessageDialog(frame, text + " Selected");
+
+            if (action != null) {
+                action.run();
+            }
         });
 
         return item;
+    }
+
+    private JButton createMenuButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(BUTTON_FONT);
+        button.setForeground(ACCENT_CYAN);
+        button.setBackground(TOOLBAR_BG);
+        button.setFocusPainted(false);
+        button.setBorder(new EmptyBorder(10, 20, 10, 20));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) { button.setBackground(HOVER_COLOR); }
+            public void mouseExited(MouseEvent e) { button.setBackground(TOOLBAR_BG); }
+        });
+        return button;
+    }
+
+    private JPopupMenu createDropdownMenu(JButton owner) {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBorder(new LineBorder(Color.BLACK));
+        menu.setBackground(DARK_BG);
+
+        menu.add(createStyledItem("Reaction Speed", this::startGameOne));
+        menu.add(createStyledItem("Game 2", () -> System.out.println("G2 clicked")));
+        menu.addSeparator();
+        menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
+        return menu;
+    }
+
+    private void startGameOne() {
+        System.out.println("hi");
+        Square square = new Square();
+        square.changePlacement();
+        //setScreen(square.getGamePanel());
+    }
+
+    private void setScreen(Component component) {
+        frame.getContentPane().removeAll();
+        frame.add(component, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
     }
 
     public void showWindow() {
