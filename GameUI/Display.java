@@ -111,19 +111,6 @@ public class Display {
         return button;
     }
 
-    private JPopupMenu createDropdownMenu(JButton owner) {
-        JPopupMenu menu = new JPopupMenu();
-        menu.setBorder(new LineBorder(Color.BLACK));
-        menu.setBackground(DARK_BG);
-
-        menu.add(createStyledItem("Reaction Speed", this::startGameOne));
-        menu.add(createStyledItem("Memory Game", this::startGameTwo));
-        menu.add(createStyledItem("Typing Game", this::startGameThree));
-        menu.addSeparator();
-        menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
-        return menu;
-    }
-
     private void startGameOne() {
         Square square = new Square(this::createMenu);
         setScreen(square.getGamePanel());

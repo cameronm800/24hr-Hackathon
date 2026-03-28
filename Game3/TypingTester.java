@@ -30,10 +30,14 @@ public class TypingTester {
 
     public String getUntypedString() {
         StringBuilder unTyped = new StringBuilder();
-        for (int i = currentCharIndex; i < characters.size(); i++) {
+        for (int i = currentCharIndex+1; i < characters.size(); i++) {
             unTyped.append(characters.get(i));
         }
         return unTyped.toString();
+    }
+
+    public String getCharAsString() {
+        return characters.get(currentCharIndex).toString();
     }
 
     public TypingTester(File file) throws FileNotFoundException, IOException {
@@ -52,7 +56,6 @@ public class TypingTester {
     }
 
     public TypeResult typeChar(char c) {
-
             if (c == characters.get(currentCharIndex)) {
                 currentCharIndex++;
                 if (currentCharIndex == characters.size()) {
