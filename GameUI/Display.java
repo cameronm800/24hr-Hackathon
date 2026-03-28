@@ -111,16 +111,14 @@ public class Display {
     }
 
     private void startGameTwo() {
-    MemoryPlus mem = new MemoryPlus(10, 1);
-    mem.createGamePanel();
-    setScreen(mem.getGamePanel());
+        MemoryPlus mem = new MemoryPlus(12, 1);
+        mem.createGamePanel();
+        setScreen(mem.getGamePanel());
     }
 
     private void startGameThree() {
         System.out.println("some bs");
     }
-
-
 
     private void setScreen(Component component) {
         frame.getContentPane().removeAll();
