@@ -146,11 +146,6 @@ public class Square {
         squares.add(newSq);
     }
 
-    private long getSeconds() {
-        return uiStopWatch.getSeconds();
-
-    }
-
     private void changePlacement(SquareEntity sq) {
 
         int panelWidth = gamePanel.getWidth();
@@ -166,7 +161,7 @@ public class Square {
         }
 
         int scoreBonus = Math.min(3500, score * 100);
-        int maxRandom = 2000 - scoreBonus;
+        int maxRandom = 1500 - scoreBonus;
         int nextDelay = 500 + random.nextInt(Math.max(1, maxRandom));
         randomTimer.setInitialDelay(nextDelay);
         randomTimer.restart();
