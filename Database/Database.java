@@ -15,6 +15,17 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+
+    public Connection getConnection() {
+        String dbUrl = "jdbc:sqlite:database.db";
+        try (Connection connection = DriverManager.getConnection(dbUrl);) {
+            return connection;
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
     public static void createTable(Connection connection) {
         try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(
