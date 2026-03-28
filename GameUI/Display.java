@@ -3,6 +3,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import Game1.Square;
+import Game2.MemoryPlus;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -96,17 +97,22 @@ public class Display {
         menu.setBackground(DARK_BG);
 
         menu.add(createStyledItem("Reaction Speed", this::startGameOne));
-        menu.add(createStyledItem("Game 2", () -> System.out.println("G2 clicked")));
+        menu.add(createStyledItem("Game 2", this::startGameTwo));
         menu.addSeparator();
         menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
         return menu;
     }
 
     private void startGameOne() {
-        System.out.println("hi");
         Square square = new Square();
         square.changePlacement();
         setScreen(square.getGamePanel());
+    }
+
+        private void startGameTwo() {
+        MemoryPlus memory = new MemoryPlus(6, 6);
+        memory.createGamePanel();
+        setScreen(memory.getGamePanel());
     }
 
     private void setScreen(Component component) {
