@@ -84,6 +84,7 @@ public class Square {
             if (timePassed.get() >= 60) {
                 uiStopWatch.stop();
                 randomTimer.stop();
+                
 
                 try {
                     FileWriter writer = new FileWriter("scoreData.txt");

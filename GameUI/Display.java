@@ -22,7 +22,6 @@ public class Display {
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
     private final Color HOVER_COLOR = new Color(60, 60, 60);
-
     private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
     private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 20);
     private static final Font LABEL_FONT = new Font("SansSerif", Font.ITALIC, 14);
