@@ -191,6 +191,7 @@ public class MemoryPlus {
             // If they don't match, hide the cards again
             flippedCards[firstFlippedRow][firstFlippedCol] = false;
             flippedCards[secondFlippedRow][secondFlippedCol] = false;
+            score -= 1;
         }
 
         // Update the score display
