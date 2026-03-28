@@ -21,8 +21,6 @@ public class Square {
     private JLabel timeLabel;
     private Timer randomTimer;
     private Random random = new Random();
-    private long startTime = -1;
-    private long duration = 5000;
     private UIStopWatch uiStopWatch;
     private Runnable onExit;
 
@@ -140,11 +138,6 @@ public class Square {
         squares.add(newSq);
     }
 
-    private long getSeconds() {
-        return uiStopWatch.getSeconds();
-
-    }
-
     private void changePlacement(SquareEntity sq) {
 
         int panelWidth = gamePanel.getWidth();
@@ -160,7 +153,7 @@ public class Square {
         }
 
         int scoreBonus = Math.min(3500, score * 100);
-        int maxRandom = 4000 - scoreBonus;
+        int maxRandom = 1500 - scoreBonus;
         int nextDelay = 500 + random.nextInt(Math.max(1, maxRandom));
         randomTimer.setInitialDelay(nextDelay);
         randomTimer.restart();
