@@ -2,6 +2,7 @@ package Game1;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.Random;
 public class Square {
     private boolean isRed = true;
@@ -24,11 +25,26 @@ public class Square {
                 g.fillRect(coords[0], coords[1], squareSize, squareSize);
             }
 
-            protected Dimension getPrefferredSize() {
+            public Dimension getPreferredSize() {
                 return new Dimension(800,600);
             }
         };
         gamePanel.setLayout(null);
+        gamePanel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                int mousePosX = e.getX();
+                int mousePosY = e.getY();
+
+                if (mousePosX >= coords[0] && mousePosX <= coords[0] + squareSize && mousePosY >= coords[1] && mousePosY <= coords[1] + squareSize) {
+                    Pressed();
+                    isRed = !isRed;
+                    changePlacement();
+                    gamePanel.repaint();
+                } else {
+                    System.out.println("HI");
+                }
+            }
+        });
     }
 
 
