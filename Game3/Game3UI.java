@@ -38,8 +38,8 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                     JOptionPane.showMessageDialog(this, "Game Over! Your score is: " + typingTester.getScore(),
                             "Game Over", JOptionPane.INFORMATION_MESSAGE);
                     KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
-                    display.setScore(2, typingTester.getScore());
                     if (onGameOver != null) {
+                        display.setScore(2, typingTester.getScore());
                         onGameOver.run();
                     }
                     break;

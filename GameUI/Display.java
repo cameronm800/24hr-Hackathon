@@ -8,7 +8,6 @@ import Game3.*;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -99,15 +98,24 @@ public class Display {
             buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], () -> {}), gbc);
         }
 
-        if (!isDone[0] && !isDone[1] && !isDone[2]) {
-            System.out.println("done");
+        if (isDone[0] && isDone[1] && isDone[2]) {
+            buttonContainer.removeAll();
+            buttonContainer.add(createGameGroup("Submit", "", this::submit), gbc);
         }
-
+        
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
-
+        JTextField textField = new JTextField();
+        textField.addActionListener(e -> {
+            System.out.println("You entered: " + textField.getText());
+        });
+        frame.add(new JTextField("Enter username: "), BorderLayout.SOUTH);
         frame.revalidate();
         frame.repaint();
+    }
+    
+    private void submit() {
+        System.out.println("done");
     }
 
     private JPanel createGameGroup(String btnText, String labelText, Runnable action) {
