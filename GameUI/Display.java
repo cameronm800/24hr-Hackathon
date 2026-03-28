@@ -17,7 +17,7 @@ public class Display {
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(new Color(45, 45, 45));
-        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK)); // Bottom line
+        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
         menuBar.setPreferredSize(new Dimension(0, 50));
         JMenu menu = new JMenu("Menu");
         menu.setForeground(new Color(0, 191, 255));
@@ -48,6 +48,12 @@ public class Display {
         item.setForeground(Color.WHITE);
         item.setPreferredSize(new Dimension(150, 40));
         item.setBorder(new EmptyBorder(5, 10, 5, 10));
+    }
+
+    public void addLabel() {
+        JLabel label = new JLabel();
+        label.setText("HI");
+        frame.add(label);
     }
     public void showWindow() {
         createMenu();
