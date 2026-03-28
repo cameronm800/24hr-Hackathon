@@ -1,4 +1,4 @@
-package Game_1_Reaction_Speed;
+package Game1;
 
 import javax.swing.*;
 import javax.swing.border.*;
