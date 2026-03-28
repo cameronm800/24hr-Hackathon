@@ -105,11 +105,6 @@ public class Display {
         
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
-        JTextField textField = new JTextField();
-        textField.addActionListener(e -> {
-            System.out.println("You entered: " + textField.getText());
-        });
-        frame.add(new JTextField("Enter username: "), BorderLayout.SOUTH);
         frame.revalidate();
         frame.repaint();
     }
@@ -168,7 +163,7 @@ public class Display {
     }
 
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
+        MemoryPlus mem = new MemoryPlus(8, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
 
