@@ -36,8 +36,6 @@ public class Square {
         };
         gamePanel.setLayout(null);
         gamePanel.setBackground(Color.BLACK);
-        System.out.println("HIasdf");
-
         scoreLabel = new JLabel("Score: 0");
         scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -45,7 +43,6 @@ public class Square {
         gamePanel.add(scoreLabel);
 
         randomTimer = new Timer(1000, e -> {
-            System.out.println("HI");
             toggleColorRandomly();
         });
 
