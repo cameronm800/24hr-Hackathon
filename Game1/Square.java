@@ -2,14 +2,13 @@ package Game1;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-//import General.Timer;
+import General.UIStopWatch;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 //WARNING AI SLOP!! BEWAREW!!
 
@@ -19,14 +18,18 @@ public class Square {
 
     private JPanel gamePanel;
     private JLabel scoreLabel;
+    private JLabel timeLabel;
     private Timer randomTimer;
     private Random random = new Random();
     private long startTime = -1;
     private long duration = 5000;
+    private UIStopWatch uiStopWatch;
+    private Runnable onExit;
 
     private List<SquareEntity> squares = new ArrayList<>();
 
-    public Square() {
+    public Square(Runnable onExit) {
+        this.onExit = onExit;
         gamePanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -54,15 +57,39 @@ public class Square {
         scoreLabel.setBounds(20, 20, 150, 30);
         gamePanel.add(scoreLabel);
 
-        //Timer timer = new Timer();
-        //System.out.println(timer.getSeconds());
-
         addNewSquare();
 
         randomTimer = new Timer(1000, e -> {
             toggleColorRandomly();
         });
         randomTimer.start();
+
+
+        timeLabel = new JLabel("Time: 0");
+        timeLabel.setForeground(Color.WHITE);
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        timeLabel.setBounds(20, 50, 150, 30);
+
+        AtomicLong timePassed = new AtomicLong();
+
+        uiStopWatch = new UIStopWatch();
+        uiStopWatch = new UIStopWatch(e -> {
+            timePassed.set(uiStopWatch.getSeconds());
+            if (timePassed.get() >= 60) {
+                uiStopWatch.stop();
+                randomTimer.stop();
+                if (this.onExit != null) {
+                    this.onExit.run();
+                }
+
+            }
+
+            long secondLeft = 60 - timePassed.get();
+
+            timeLabel.setText("Time: " + secondLeft);
+        });
+
+        gamePanel.add(timeLabel);
 
         gamePanel.addMouseListener(new MouseAdapter() {
             @Override
@@ -111,6 +138,11 @@ public class Square {
         newSq.isRed = true;
         changePlacement(newSq);
         squares.add(newSq);
+    }
+
+    private long getSeconds() {
+        return uiStopWatch.getSeconds();
+
     }
 
     private void changePlacement(SquareEntity sq) {
