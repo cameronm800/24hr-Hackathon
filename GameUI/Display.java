@@ -105,11 +105,12 @@ public class Display {
         System.out.println("hi");
         Square square = new Square();
         square.changePlacement();
-        //setScreen(square.getGamePanel());
+        setScreen(square.getGamePanel());
     }
 
     private void setScreen(Component component) {
         frame.getContentPane().removeAll();
+        frame.setLayout(new BorderLayout());
         frame.add(component, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
