@@ -122,7 +122,7 @@ public class Display {
     }
 
     private void startGameThree() {
-        setScreen(new Game3UI());
+        setScreen(new Game3UI(this::createMenu));
     }
 
     private void setScreen(Component component) {
