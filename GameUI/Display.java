@@ -3,7 +3,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import Game1.Square;
-import Game3.Game3UI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -83,7 +82,8 @@ public class Display {
         button.setFocusPainted(false);
         button.setBorder(new EmptyBorder(10, 20, 10, 20));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
+setScreen(panel);
+    }
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) { button.setBackground(HOVER_COLOR); }
             public void mouseExited(MouseEvent e) { button.setBackground(TOOLBAR_BG); }
@@ -98,7 +98,6 @@ public class Display {
 
         menu.add(createStyledItem("Reaction Speed", this::startGameOne));
         menu.add(createStyledItem("Game 2", () -> System.out.println("G2 clicked")));
-        menu.add(createStyledItem("Game 3", this::startGameThree));
         menu.addSeparator();
         menu.add(createStyledItem("Quit Program", () -> System.exit(0)));
         return menu;
@@ -109,11 +108,6 @@ public class Display {
         Square square = new Square();
         square.changePlacement();
         setScreen(square.getGamePanel());
-    }
-
-    private void startGameThree() {
-        System.out.println("hi");
-        setScreen(new Game3UI());
     }
 
     private void setScreen(Component component) {
