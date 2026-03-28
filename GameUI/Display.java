@@ -4,8 +4,7 @@ import javax.swing.border.*;
 
 import Game1.Square;
 import Game2.MemoryPlus;
-import Game3.Game3UI;
-import Game3.TypingTester;
+import Game3.*;
 
 import java.awt.*;
 import java.awt.event.*;
