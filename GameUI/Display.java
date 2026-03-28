@@ -4,10 +4,20 @@ import javax.swing.border.*;
 
 import Game1.Square;
 import Game2.MemoryPlus;
+<<<<<<< HEAD
 import Game3.TypingTester;
+=======
+import Game3.*;
+>>>>>>> 9461d76add91b06c74a5c4a1611f1de3a8f96d3d
 
 import java.awt.*;
 import java.awt.event.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Display {
     private final JFrame frame;
@@ -16,7 +26,6 @@ public class Display {
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
     private final Color HOVER_COLOR = new Color(60, 60, 60);
-
     private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
     private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 20);
     private static final Font LABEL_FONT = new Font("SansSerif", Font.ITALIC, 14);
@@ -27,6 +36,7 @@ public class Display {
         this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.frame.getContentPane().setBackground(DARK_BG);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        resetScore();
     }
 
     private JLabel createTitle() {
@@ -35,6 +45,27 @@ public class Display {
         title.setFont(TITLE_FONT);
         title.setBorder(new EmptyBorder(100, 0, 50, 0));
         return title;
+    }
+
+    private void resetScore() {
+
+        try {
+            FileWriter writer = new FileWriter("scoreData.txt");
+            writer.write("0");
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private int getScore() {
+        int score = 0;
+        try (Scanner input = new Scanner(new File("scoreData.txt"))) {
+            score = input.nextInt();
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return score;
     }
 
     public void createMenu() {
@@ -51,13 +82,15 @@ public class Display {
         gbc.gridy = 0;
 
         gbc.gridx = 0;
-        buttonContainer.add(createGameGroup("REACTION SPEED", "EDP's might", this::startGameOne), gbc);
+
+        String reactionScoreText = Integer.toString(getScore());
+        buttonContainer.add(createGameGroup("REACTION SPEED", reactionScoreText, this::startGameOne), gbc);
 
         gbc.gridx = 1;
-        buttonContainer.add(createGameGroup("MEMORY GAME", "diddy's best", this::startGameTwo), gbc);
+        buttonContainer.add(createGameGroup("MEMORY GAME", "score", this::startGameTwo), gbc);
 
         gbc.gridx = 2;
-        buttonContainer.add(createGameGroup("TYPING GAME", "epstein's favourite", this::startGameThree), gbc);
+        buttonContainer.add(createGameGroup("TYPING GAME", "score", this::startGameThree), gbc);
 
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
@@ -121,6 +154,10 @@ public class Display {
     }
 
     private void startGameThree() {
+<<<<<<< HEAD
+=======
+        setScreen(new Game3UI(this::createMenu));
+>>>>>>> 9461d76add91b06c74a5c4a1611f1de3a8f96d3d
     }
 
     private void setScreen(Component component) {
