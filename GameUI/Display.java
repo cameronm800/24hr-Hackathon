@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -7,7 +5,6 @@ import java.awt.event.*;
 
 public class Display {
     private JFrame frame;
-    // Modern Color Palette
     private final Color DARK_BG = new Color(45, 45, 45);
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
@@ -24,9 +21,14 @@ public class Display {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.BLACK);
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+        frame.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Isle Be Better", SwingConstants.CENTER);
-        title.setForeground(new Color(0, 210, 255));
+        title.setForeground(ACCENT_CYAN);
+        title.setFont(new Font("SansSerif", Font.BOLD, 48));
+        title.setBorder(new EmptyBorder(50, 0, 0, 0));
 
         JToolBar toolBar = new JToolBar();
         toolBar.setBackground(TOOLBAR_BG);
@@ -45,7 +47,9 @@ public class Display {
         popupMenu.add(createStyledItem("Quit Program"));
 
         JButton button = new JButton("OPTIONS ▾");
-        button.setFont(new Font("SansSerif", Font.BOLD, 14));
+        button.setFont(new Font("SansSerif", Font.BOLD, 28));
+
+
         button.setForeground(ACCENT_CYAN);
         button.setBackground(TOOLBAR_BG);
         button.setFocusPainted(false);
@@ -65,9 +69,10 @@ public class Display {
         });
 
         toolBar.add(button);
-        topPanel.add(title,BorderLayout.NORTH);
-        topPanel.add(toolBar,BorderLayout.SOUTH);
-        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+        centerPanel.add(button);
+
+        frame.add(title, BorderLayout.NORTH);
+        frame.add(centerPanel, BorderLayout.CENTER);
     }
 
     private JMenuItem createStyledItem(String text) {
