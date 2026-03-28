@@ -149,12 +149,12 @@ public class Display {
     }
 
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
+        MemoryPlus mem = new MemoryPlus(12, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
 
     private void startGameThree() {
-        setScreen(new Game3UI(this));
+        setScreen(new Game3UI(this::createMenu, this));
     }
 
     private void setScreen(Component component) {

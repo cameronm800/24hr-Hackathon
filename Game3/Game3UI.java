@@ -13,15 +13,18 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
     UIStopWatch timer;
     TypingTester typingTester;
     SwingWorker<Object, Object> timerLabelUpdater;
+    Runnable onGameOver;
 
     JLabel timeLabel;
     JLabel textLabel;
     JLabel scoreLabel;
 
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
         // This fires on every single key press
         if (e.getID() == KeyEvent.KEY_PRESSED) {
+            System.out.println(e.getKeyChar());
 
             TypingTester.TypeResult typeResult = typingTester.typeChar(e.getKeyChar());
 
@@ -33,7 +36,13 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                             "<font color='green'>%s</font>" +
                             "</html>", typingTester.getTypedString());
                     textLabel.setText(labelText);
+                    JOptionPane.showMessageDialog(this, "Game Over! Your score is: " + typingTester.getScore(),
+                            "Game Over", JOptionPane.INFORMATION_MESSAGE);
+                    KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
                     display.setScore(2, typingTester.getScore());
+                    if (onGameOver != null) {
+                        onGameOver.run();
+                    }
                     break;
                 case TypingTester.TypeResult.CORRECT:
                     labelText = String.format("<html>" +
@@ -81,11 +90,12 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         }
     }
 
-    public Game3UI(Display display) {
+    public Game3UI(Runnable onGameOver, Display display) {
         //TODO Make sure directional
         super(new BorderLayout());
         this.display = display;
 
+        this.onGameOver = onGameOver;
         timeLabel = new JLabel("00:00:000");
         textLabel = new JLabel("hello World");
         scoreLabel = new JLabel("0");
