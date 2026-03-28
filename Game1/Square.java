@@ -9,6 +9,10 @@ import java.util.List;
 import General.UIStopWatch;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Date;
+import Database.Database;
 
 //WARNING AI SLOP!! BEWAREW!!
 
@@ -82,6 +86,18 @@ public class Square {
             if (timePassed.get() >= 60) {
                 uiStopWatch.stop();
                 randomTimer.stop();
+                
+
+                try {
+                    FileWriter writer = new FileWriter("scoreData.txt");
+                    writer.write(Integer.toString(score));
+                    writer.close();
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
+                }
+
+
+
                 if (this.onExit != null) {
                     this.onExit.run();
                 }
