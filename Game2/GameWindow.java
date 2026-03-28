@@ -1,7 +1,10 @@
+package Game2;
 import javax.swing.*;
 import java.awt.BorderLayout;
 
 public class GameWindow extends JFrame {
+
+
     public GameWindow(MemoryPlus memory) {
         // Set up the frame
         setTitle("Memory Game");
