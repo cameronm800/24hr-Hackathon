@@ -2,10 +2,13 @@ package Game1;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+//import General.Timer;
 import java.util.Random;
 
 //WARNING AI SLOP!! BEWAREW!!
@@ -16,9 +19,10 @@ public class Square {
 
     private JPanel gamePanel;
     private JLabel scoreLabel;
-
     private Timer randomTimer;
     private Random random = new Random();
+    private long startTime = -1;
+    private long duration = 5000;
 
     private List<SquareEntity> squares = new ArrayList<>();
 
@@ -49,6 +53,9 @@ public class Square {
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         scoreLabel.setBounds(20, 20, 150, 30);
         gamePanel.add(scoreLabel);
+
+        //Timer timer = new Timer();
+        //System.out.println(timer.getSeconds());
 
         addNewSquare();
 
