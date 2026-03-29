@@ -11,8 +11,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Date;
-import Database.Database;
+import GameUI.Display;
 
 //WARNING AI SLOP!! BEWAREW!!
 
@@ -29,11 +28,10 @@ public class Square {
     private long duration = 5000;
     private UIStopWatch uiStopWatch;
     private final Runnable onExit;
-    private final int TOTAL_TIME = 10;
 
     private final List<SquareEntity> squares = new ArrayList<>();
 
-    public Square(Runnable onExit) {
+    public Square(Runnable onExit, Display orgDisplay) {
         this.onExit = onExit;
         gamePanel = new JPanel() {
             @Override
@@ -84,19 +82,12 @@ public class Square {
         uiStopWatch = new UIStopWatch();
         uiStopWatch = new UIStopWatch(e -> {
             timePassed.set(uiStopWatch.getSeconds());
-            if (timePassed.get() >= TOTAL_TIME) {
+            if (timePassed.get() >= 5) {
                 uiStopWatch.stop();
                 randomTimer.stop();
-                
-
-                try {
-                    FileWriter writer = new FileWriter("scoreData.txt");
-                    writer.write(Integer.toString(score));
-                    writer.close();
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
-
+                orgDisplay.setScore(0, score);
+                JOptionPane.showMessageDialog(gamePanel, "Game Over! Your score is: " + score, 
+            "Game Over", JOptionPane.INFORMATION_MESSAGE);
 
 
                 if (this.onExit != null) {
@@ -105,7 +96,7 @@ public class Square {
 
             }
 
-            long secondLeft = TOTAL_TIME - timePassed.get();
+            long secondLeft = 60 - timePassed.get();
 
             timeLabel.setText("Time: " + secondLeft);
         });

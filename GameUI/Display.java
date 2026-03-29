@@ -1,19 +1,24 @@
 package GameUI;
+
+import Game1.*;
+import Game2.*;
+import Game3.*;
+import GameUI.Display;
+import Database.Database;
 import javax.swing.*;
 import javax.swing.border.*;
-
-import Game1.Square;
-import Game2.MemoryPlus;
-import Game3.*;
-
 import java.awt.*;
 import java.awt.event.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Date;
+
+import java.io.*;
+import java.nio.file.Paths;
+import java.util.Map;
 
 public class Display {
     private final JFrame frame;
@@ -22,6 +27,8 @@ public class Display {
     private final Color ACCENT_CYAN = new Color(0, 210, 255);
     private final Color TOOLBAR_BG = new Color(33, 33, 33);
     private final Color HOVER_COLOR = new Color(60, 60, 60);
+    private int[] scores = {0, 0, 0};
+    private boolean[] isDone = {false, false, false};
     private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 48);
     private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 20);
     private static final Font LABEL_FONT = new Font("SansSerif", Font.ITALIC, 14);
@@ -35,6 +42,11 @@ public class Display {
         resetScore();
     }
 
+    public void setScore(int game, int score) {
+        scores[game] = score;
+        isDone[game] = true;
+    }
+
     private JLabel createTitle() {
         JLabel title = new JLabel("Isle Be Better", SwingConstants.CENTER);
         title.setForeground(ACCENT_CYAN);
@@ -44,7 +56,6 @@ public class Display {
     }
 
     private void resetScore() {
-
         try {
             FileWriter writer = new FileWriter("scoreData.txt");
             writer.write("0");
@@ -52,16 +63,6 @@ public class Display {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-    }
-
-    private int getScore() {
-        int score = 0;
-        try (Scanner input = new Scanner(new File("scoreData.txt"))) {
-            score = input.nextInt();
-        } catch (FileNotFoundException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return score;
     }
 
     public void createMenu() {
@@ -78,21 +79,119 @@ public class Display {
         gbc.gridy = 0;
 
         gbc.gridx = 0;
-
-        String reactionScoreText = Integer.toString(getScore());
-        buttonContainer.add(createGameGroup("REACTION SPEED", reactionScoreText, this::startGameOne), gbc);
+        if (!isDone[0]) {
+            buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], this::startGameOne), gbc);
+        }
+        else {
+            buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], () -> {}), gbc);
+        }
 
         gbc.gridx = 1;
-        buttonContainer.add(createGameGroup("MEMORY GAME", "score", this::startGameTwo), gbc);
+        if (!isDone[1]) {
+            buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], this::startGameTwo), gbc);
+        }
+        else {
+            buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], () -> {}), gbc);
+        }
 
         gbc.gridx = 2;
-        buttonContainer.add(createGameGroup("TYPING GAME", "score", this::startGameThree), gbc);
+        if (!isDone[2]) {
+            buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], this::startGameThree), gbc);
+        }
+        else {
+            buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], () -> {}), gbc);
+        }
+
+        // Once all games are done, add a username field and a submit button
+        if (isDone[0] && isDone[1] && isDone[2]) {
+            buttonContainer.removeAll();  // Remove all game buttons
+
+            // Create username input and submit button
+            buttonContainer.add(createUsernameInput(), gbc);
+        }
 
         frame.add(title, BorderLayout.NORTH);
         frame.add(buttonContainer, BorderLayout.CENTER);
-
         frame.revalidate();
         frame.repaint();
+    }
+
+    private JPanel createUsernameInput() {
+        JPanel usernamePanel = new JPanel();
+        usernamePanel.setLayout(new BoxLayout(usernamePanel, BoxLayout.Y_AXIS));
+        usernamePanel.setOpaque(false);
+
+        // Create label and input for username
+        JLabel usernameLabel = new JLabel("Enter Username:");
+        usernameLabel.setForeground(Color.GRAY);
+        usernameLabel.setFont(LABEL_FONT);
+        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JTextField usernameField = new JTextField();
+        usernameField.setMaximumSize(new Dimension(280, 40));
+        usernameField.setPreferredSize(new Dimension(280, 40));
+        usernameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Create the submit button
+        JButton submitButton = new JButton("Submit");
+        submitButton.setFont(BUTTON_FONT);
+        submitButton.setForeground(ACCENT_CYAN);
+        submitButton.setBackground(TOOLBAR_BG);
+        submitButton.setFocusPainted(false);
+        submitButton.setEnabled(false); // Initially disabled
+        submitButton.setMaximumSize(new Dimension(280, 50));
+        submitButton.setPreferredSize(new Dimension(280, 50));
+        submitButton.setBorder(new LineBorder(ACCENT_CYAN, 2));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Enable submit button only if username is entered
+        usernameField.addCaretListener(e -> {
+            String username = usernameField.getText().trim();
+            submitButton.setEnabled(!username.isEmpty());
+        });
+
+        // Submit button action
+        submitButton.addActionListener(e -> {
+            String username = usernameField.getText().trim();
+            // Add your logic for handling the username submission
+
+            //TODO: Need bash file to contain export CLASSPATH=${CLASSPATH}:./Database/sqlite-jdbc-3.51.3.0.jar
+            Database database = new Database();
+            database.insertTable(username, scores[0], scores[1], scores[2]);
+
+            try {
+                // 1. Get the absolute path to your 'Data' folder
+                String projectRoot = System.getProperty("user.dir");
+                String dataFolderPath = Paths.get(projectRoot, "Data").toString();
+
+                // 2. Build the command: python -m package.module
+                // Note: We use the dot notation for packages
+                ProcessBuilder pb = new ProcessBuilder("python3", "-m", "Data.InterpretData");
+
+                // 3. Set the PYTHONPATH so Python can see the 'Data' folder
+                Map<String, String> env = pb.environment();
+                env.put("PYTHONPATH", dataFolderPath);
+
+                // 4. Standard process execution
+                pb.redirectErrorStream(true);
+                Process p = pb.start();
+
+                BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = r.readLine()) != null) {
+                    System.out.println("Python: " + line);
+                }
+
+            } catch (Exception xe) {
+                xe.printStackTrace();
+            }
+        });
+
+        usernamePanel.add(usernameLabel);
+        usernamePanel.add(usernameField);
+        usernamePanel.add(submitButton);
+
+        return usernamePanel;
     }
 
     private JPanel createGameGroup(String btnText, String labelText, Runnable action) {
@@ -140,17 +239,17 @@ public class Display {
     }
 
     private void startGameOne() {
-        Square square = new Square(this::createMenu);
+        Square square = new Square(this::createMenu, this);
         setScreen(square.getGamePanel());
     }
-
+    
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu());
+        MemoryPlus mem = new MemoryPlus(12, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
-
+    
     private void startGameThree() {
-        setScreen(new Game3UI(this::createMenu));
+        setScreen(new Game3UI(this::createMenu, this));
     }
 
     private void setScreen(Component component) {

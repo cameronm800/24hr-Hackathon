@@ -3,12 +3,14 @@ package Game3;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import GameUI.Display;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import General.UIStopWatch;
 
 public class Game3UI extends JPanel implements KeyEventDispatcher {
+    private Display display;
     UIStopWatch timer;
     TypingTester typingTester;
     SwingWorker<Object, Object> timerLabelUpdater;
@@ -23,7 +25,6 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
     public boolean dispatchKeyEvent(KeyEvent e) {
         // This fires on every single key press
         if (e.getID() == KeyEvent.KEY_PRESSED) {
-            System.out.println(e.getKeyChar());
 
             TypingTester.TypeResult typeResult = typingTester.typeChar(e.getKeyChar());
 
@@ -40,6 +41,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                             "Game Over", JOptionPane.INFORMATION_MESSAGE);
                     KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
                     if (onGameOver != null) {
+                        display.setScore(2, typingTester.getScore());
                         onGameOver.run();
                     }
                     break;
@@ -89,9 +91,10 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         }
     }
 
-    public Game3UI(Runnable onGameOver) {
+    public Game3UI(Runnable onGameOver, Display display) {
         //TODO Make sure directional
         super(new BorderLayout());
+        this.display = display;
 
         this.onGameOver = onGameOver;
         timeLabel = new JLabel("00:00:000");
