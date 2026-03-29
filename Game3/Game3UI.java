@@ -117,7 +117,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         add(scoreLabel, BorderLayout.EAST);
 
         try {
-            typingTester = new TypingTester(30);
+            typingTester = new TypingTester(5);
             timer = new UIStopWatch();
 
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);

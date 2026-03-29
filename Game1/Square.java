@@ -29,6 +29,7 @@ public class Square {
     private long duration = 5000;
     private UIStopWatch uiStopWatch;
     private final Runnable onExit;
+    private final int TOTAL_TIME = 10;
 
     private final List<SquareEntity> squares = new ArrayList<>();
 
@@ -83,7 +84,7 @@ public class Square {
         uiStopWatch = new UIStopWatch();
         uiStopWatch = new UIStopWatch(e -> {
             timePassed.set(uiStopWatch.getSeconds());
-            if (timePassed.get() >= 60) {
+            if (timePassed.get() >= TOTAL_TIME) {
                 uiStopWatch.stop();
                 randomTimer.stop();
                 
@@ -104,7 +105,7 @@ public class Square {
 
             }
 
-            long secondLeft = 60 - timePassed.get();
+            long secondLeft = TOTAL_TIME - timePassed.get();
 
             timeLabel.setText("Time: " + secondLeft);
         });
