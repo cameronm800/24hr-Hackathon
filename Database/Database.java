@@ -1,38 +1,33 @@
 package Database;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.SQLException;
 public class Database {
-    public static void main() {
+    private Connection connection;
+    public Database() {
+            getConnection();
+            createTable();
+    }
+
+    public void getConnection() {
         String dbUrl = "jdbc:sqlite:database.db";
-        try (Connection connection = DriverManager.getConnection(dbUrl);) {
-            createTable(connection);
-        } 
+        try {
+            connection = DriverManager.getConnection(dbUrl);
+        }
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public Connection getConnection() {
-        String dbUrl = "jdbc:sqlite:database.db";
-        try (Connection connection = DriverManager.getConnection(dbUrl);) {
-            return connection;
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-    public static void createTable(Connection connection) {
+    public void createTable() {
         try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(
             """
                 CREATE TABLE IF NOT EXISTS gameData (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR(100) NOT NULL,
-                dateOfTest DATE NOT NULL,
+                testTime TIME NOT NULL,
                 score1 INTEGER NOT NULL,
                 score2 INTEGER NOT NULL,
                 score3 INTEGER NOT NULL);
@@ -40,42 +35,50 @@ public class Database {
             );
         }
         catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
     
 
 
-    public static void insertTable(Connection connection, String username, Date dateOfTest, int score1, int score2, int score3) {
+    public void insertTable(String username, int score1, int score2, int score3) {
         try {PreparedStatement prep = connection.prepareStatement(
             """
-            INSERT INTO gameData(username, testDuration, score1, score2, score3)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO gameData(username, testTime, score1, score2, score3)
+            VALUES (?, TIME('now'), ?, ?, ?)
             """
             );
             prep.setString(1, username);
-            prep.setDate(2, dateOfTest);
-            prep.setInt(3, score1);
-             prep.setInt(4, score2);
-            prep.setInt(5, score3);
-            prep.executeQuery();
+            prep.setInt(2, score1);
+             prep.setInt(3, score2);
+            prep.setInt(4, score3);
+            prep.executeUpdate();
         }
         catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
-    public static void deleteAll(Connection connection) {
+    public void deleteAll() {
         try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(
             """
-                DELETE * FROM gameData
+                DELETE FROM gameData
             """
             );
         }
         catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void close() {
+        try {
+            connection.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

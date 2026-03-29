@@ -82,7 +82,7 @@ public class Square {
         uiStopWatch = new UIStopWatch();
         uiStopWatch = new UIStopWatch(e -> {
             timePassed.set(uiStopWatch.getSeconds());
-            if (timePassed.get() >= 60) {
+            if (timePassed.get() >= 5) {
                 uiStopWatch.stop();
                 randomTimer.stop();
                 orgDisplay.setScore(0, score);

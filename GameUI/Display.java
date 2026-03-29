@@ -3,7 +3,7 @@ package GameUI;
 import Game1.*;
 import Game2.*;
 import Game3.*;
-
+import Database.Database;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.sql.Date;
 public class Display {
     private final JFrame frame;
 
@@ -147,8 +147,11 @@ public class Display {
         // Submit button action
         submitButton.addActionListener(e -> {
             String username = usernameField.getText().trim();
-            System.out.println("Username submitted: " + username);
             // Add your logic for handling the username submission
+
+            //TODO: Need bash file to contain export CLASSPATH=${CLASSPATH}:./Database/sqlite-jdbc-3.51.3.0.jar
+            Database database = new Database();
+            database.insertTable(username, scores[0], scores[1], scores[2]);
         });
 
         usernamePanel.add(usernameLabel);
