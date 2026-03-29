@@ -7,13 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class TypingTester {
     private List<Character> characters = new ArrayList<Character>();
     private int currentCharIndex = 0;
     private int score = 0;
+    private String paragraph;
 
     public enum TypeResult {
         CORRECT,
@@ -23,6 +24,10 @@ public class TypingTester {
 
     public int getScore() {
         return score;
+    }
+
+    public String getParagraph() {
+        return paragraph;
     }
 
     public String getTypedString() {
@@ -45,16 +50,29 @@ public class TypingTester {
         return characters.get(currentCharIndex).toString();
     }
 
-    public TypingTester(File file) throws FileNotFoundException, IOException {
-        try (Reader fileReader = new BufferedReader(new FileReader(file));) {
-            int c;
-            while ((c = fileReader.read()) != -1) {
-                characters.add((char) c);
+    public TypingTester(int numWords) throws IOException {
+        List<String> words = new ArrayList<>();
+        try (BufferedReader fileReader = new BufferedReader(new FileReader("words.txt"));) {
+            String line;
+            while ((line = fileReader.readLine()) != null) {
+                words.add(line);
             }
         }
+        Random rand = new Random();
+        String paragraph = words.get(rand.nextInt(words.size() - 1));
+        for (int i = 1; i < numWords; i++) {
+            paragraph += " " + words.get(rand.nextInt(words.size() - 1));
+        }
+
+        setParagraph(paragraph);
     }
 
     public TypingTester(String paragraph) {
+        setParagraph(paragraph);
+    }
+
+    public void setParagraph(String paragraph) {
+        this.paragraph = paragraph;
         for (char c : paragraph.toCharArray()) {
             characters.add(c);
         }

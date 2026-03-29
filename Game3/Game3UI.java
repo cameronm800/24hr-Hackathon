@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import General.UIStopWatch;
 
@@ -34,6 +35,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                             "<font color='green'>%s</font>" +
                             "</html>", typingTester.getTypedString());
                     textLabel.setText(labelText);
+
                     JOptionPane.showMessageDialog(this, "Game Over! Your score is: " + typingTester.getScore(),
                             "Game Over", JOptionPane.INFORMATION_MESSAGE);
                     KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
@@ -93,8 +95,10 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
 
         this.onGameOver = onGameOver;
         timeLabel = new JLabel("00:00:000");
-        textLabel = new JLabel("hello World");
+        textLabel = new JLabel();
         scoreLabel = new JLabel("0");
+
+
 
         timeLabel.setForeground(Color.WHITE);
         textLabel.setForeground(Color.WHITE);
@@ -104,19 +108,31 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         textLabel.setHorizontalAlignment(JLabel.CENTER);
         scoreLabel.setHorizontalAlignment(JLabel.CENTER);
 
+        textLabel.setPreferredSize(new Dimension(100, 30));
+
+
+
         add(timeLabel, BorderLayout.NORTH);
         add(textLabel, BorderLayout.CENTER);
         add(scoreLabel, BorderLayout.EAST);
 
-        typingTester = new TypingTester("hello world");
-        timer = new UIStopWatch();
+        try {
+            typingTester = new TypingTester(30);
+            timer = new UIStopWatch();
 
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 
-        //Updates the label displaying the timer
-        timerLabelUpdater = new TimerLabelUpdater(timer, timeLabel);
-        timerLabelUpdater.execute();
+            textLabel.setText(String.format("<html>" +
+                    "<font color='white'>%s</font>" +
+                    "</html>",  typingTester.getParagraph()));
 
+            //Updates the label displaying the timer
+            timerLabelUpdater = new TimerLabelUpdater(timer, timeLabel);
+            timerLabelUpdater.execute();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            //TODO Handle error
+        }
     }
 
     protected void paintComponent(Graphics g) {
