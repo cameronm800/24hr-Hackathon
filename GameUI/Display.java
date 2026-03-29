@@ -158,7 +158,7 @@ public class Display {
             //TODO: Need bash file to contain export CLASSPATH=${CLASSPATH}:./Database/sqlite-jdbc-3.51.3.0.jar
             Database database = new Database();
             database.insertTable(username, scores[0], scores[1], scores[2]);
-
+            frame.setVisible(false);
             try {
                 // 1. Get the absolute path to your 'Data' folder
                 String projectRoot = System.getProperty("user.dir");
@@ -244,7 +244,7 @@ public class Display {
     }
     
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(12, 1, () -> createMenu(), this);
+        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
     
