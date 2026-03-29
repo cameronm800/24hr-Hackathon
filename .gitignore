@@ -6,3 +6,4 @@ Testing/*.class
 Game1/*.class
 Game2/*.class
 Game3/*.class
+out/*
