@@ -79,7 +79,8 @@ def run_gui():
     ax2.set_title("Average Skill Strengths")
 
     fig.tight_layout()
-
+    fig.tight_layout(pad=3.0) 
+    fig.subplots_adjust(hspace=0.5, bottom=0.1) # hspace is the vertical gap
     canvas = FigureCanvasTkAgg(fig, master=graph_frame)
     canvas.draw()
     canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)

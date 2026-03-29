@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import General.UIStopWatch;
 
 public class MemoryPlus {
     private int[][] grid;
@@ -21,8 +22,8 @@ public class MemoryPlus {
     private long startTime;
     private JLabel scoreLabel;
     private JLabel timeLabel;
-    private Timer gameTimer;
-
+    private UIStopWatch gameTimer;
+    SwingWorker<Object, Object> timerLabelUpdater;
     private JPanel gamePanel;
     private int firstFlippedRow = -1;
     private int firstFlippedCol = -1;
@@ -33,6 +34,27 @@ public class MemoryPlus {
     private Runnable onGameOver;
 
     private boolean isProcessing = false;
+
+    private class TimerLabelUpdater extends SwingWorker<Object, Object> {
+        UIStopWatch timer;
+        JLabel timeLabel;
+
+        public TimerLabelUpdater(UIStopWatch timer, JLabel timeLabel) {
+            this.timer = timer;
+            this.timeLabel = timeLabel;
+        }
+
+        @Override
+        protected Object doInBackground() throws Exception {
+            while (true) {
+                timeLabel.setText("Time: " + timer.timeSinceStart() + "s");
+                Thread.sleep(100);
+            }
+            //return null;
+        }
+    }
+
+
 
     public MemoryPlus(int k, int r, Runnable onGameOver, Display display) {
         this.display = display;
@@ -46,7 +68,7 @@ public class MemoryPlus {
         this.createGamePanel();
         startGameTimer();
 
-        Timer startTimer = new Timer(1000, e -> {
+        Timer startTimer = new Timer(2500, e -> {
             showingCards = false;
             gamePanel.repaint();
             ((Timer)e.getSource()).stop();
@@ -89,7 +111,7 @@ public class MemoryPlus {
 
                 for (int i = 0; i < grid.length; i++) {
                     for (int j = 0; j < grid[i].length; j++) {
-                        int x = i * cardSize + 20;
+                        int x = (int) (i * cardSize + 20 + gamePanel.getWidth() * 0.35f);
                         int y = j * cardSize + 20;
 
                         if (showingCards || flippedCards[i][j] || matchedCards[i][j]) {
@@ -136,7 +158,7 @@ public class MemoryPlus {
 
                 for (int i = 0; i < grid.length; i++) {
                     for (int j = 0; j < grid[i].length; j++) {
-                        int x = i * cardSize + 20;
+                        int x = (int) (i * cardSize + 20 + gamePanel.getWidth() * 0.35f);
                         int y = j * cardSize + 20;
 
                         if (mousePosX >= x && mousePosX <= x + cardSize &&
@@ -216,13 +238,9 @@ public class MemoryPlus {
 
     public void startGameTimer() {
         startTime = System.currentTimeMillis();
-
-        gameTimer = new Timer(1000, e -> {
-            long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-            timeLabel.setText("Time: " + elapsedTime + "s");
-        });
-
-        gameTimer.start();
+        gameTimer = new UIStopWatch();
+            timerLabelUpdater = new TimerLabelUpdater(gameTimer, timeLabel);
+            timerLabelUpdater.execute();
     }
 
     public void stopGameTimer() {

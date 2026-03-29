@@ -2,47 +2,84 @@ package Game1;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import General.UIStopWatch;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
-import java.io.FileWriter;
-import java.io.IOException;
+import General.UIStopWatch;
 import GameUI.Display;
-
-//WARNING AI SLOP!! BEWAREW!!
 
 public class Square {
     private int score = 0;
-    private final int UISize = 1000;
+    private final int UISize = 800; // Standard fallback size
 
     private final JPanel gamePanel;
     private final JLabel scoreLabel;
     private final JLabel timeLabel;
+    private final JPanel topBar;
     private final Timer randomTimer;
     private final Random random = new Random();
-    private long startTime = -1;
-    private long duration = 5000;
     private UIStopWatch uiStopWatch;
     private final Runnable onExit;
-
     private final List<SquareEntity> squares = new ArrayList<>();
+    private SwingWorker<Object, Object> timerLabelUpdater;
+    private UIStopWatch gameTimer;
+
+    private class TimerLabelUpdater extends SwingWorker<Object, Object> {
+        UIStopWatch timer;
+        JLabel timeLabel;
+
+        public TimerLabelUpdater(UIStopWatch timer, JLabel timeLabel) {
+            this.timer = timer;
+            this.timeLabel = timeLabel;
+        }
+
+        @Override
+        protected Object doInBackground() throws Exception {
+            while (true) {
+                String time = timer.timeSinceStart();
+                timeLabel.setText("Time: " + time + " / 0:60s");
+                Thread.sleep(100);
+            }
+            //return null;
+        }
+    }
+
+
+
 
     public Square(Runnable onExit, Display orgDisplay) {
         this.onExit = onExit;
-        gamePanel = new JPanel() {
+        scoreLabel = new JLabel("Score: 0");
+        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        
+        timeLabel = new JLabel("Time: 0 / 0:60s");
+        timeLabel.setForeground(Color.WHITE);
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 20));        
+        gameTimer = new UIStopWatch();
+        timerLabelUpdater = new TimerLabelUpdater(gameTimer, timeLabel);
+        timerLabelUpdater.execute();
+        topBar = new JPanel(new BorderLayout());
+        topBar.setBackground(Color.BLACK);
+        topBar.add(timeLabel, BorderLayout.WEST);
+        topBar.add(scoreLabel, BorderLayout.EAST);
+
+        gamePanel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.BLACK);
+                g.setColor(Color.WHITE);
                 g.fillRect(0, 0, getWidth(), getHeight());
 
-                for (SquareEntity sq : squares) {
-                    g.setColor(sq.isRed ? Color.RED : Color.GREEN);
-                    g.fillRect(sq.coords[0], sq.coords[1], sq.squareSize, sq.squareSize);
+                synchronized (squares) {
+                    for (SquareEntity sq : squares) {
+                        g.setColor(sq.isRed ? Color.RED : Color.GREEN);
+                        g.fillRect(sq.coords[0], sq.coords[1], sq.squareSize, sq.squareSize);
+                    }
                 }
             }
 
@@ -52,157 +89,98 @@ public class Square {
             }
         };
 
-        //game panel
-        gamePanel.setLayout(null);
-        gamePanel.setBackground(Color.BLACK);
+        gamePanel.add(topBar);
 
-        //THE SCORE LABEL
-        scoreLabel = new JLabel("Score: 0");
-        scoreLabel.setForeground(Color.WHITE);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        scoreLabel.setBounds(20, 20, 150, 30);
-        gamePanel.add(scoreLabel);
+        gamePanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                topBar.setBounds(0, 0, gamePanel.getWidth(), 40);
+            }
+        });
 
         addNewSquare();
 
-        //Timer that deals with how often the squares changes colours
         randomTimer = new Timer(1000, e -> {
-            toggleColorRandomly();
+            for (SquareEntity sq : squares) sq.isRed = random.nextBoolean();
+            gamePanel.repaint();
         });
         randomTimer.start();
 
-        //Time label
-        timeLabel = new JLabel("Time: 0");
-        timeLabel.setForeground(Color.WHITE);
-        timeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        timeLabel.setBounds(20, 50, 150, 30);
-
-        //Timer for stopwatch label
-        AtomicLong timePassed = new AtomicLong();
-        uiStopWatch = new UIStopWatch();
         uiStopWatch = new UIStopWatch(e -> {
-            timePassed.set(uiStopWatch.getSeconds());
-            if (timePassed.get() >= 5) {
-                uiStopWatch.stop();
-                randomTimer.stop();
-                orgDisplay.setScore(0, score);
-                JOptionPane.showMessageDialog(gamePanel, "Game Over! Your score is: " + score, 
-            "Game Over", JOptionPane.INFORMATION_MESSAGE);
-
-
-                if (this.onExit != null) {
-                    this.onExit.run();
-                }
-
+            long seconds = uiStopWatch.getSeconds();
+            if (seconds >= 60) {
+                stopGame(orgDisplay);
             }
-
-            long secondLeft = 60 - timePassed.get();
-
-            timeLabel.setText("Time: " + secondLeft);
         });
 
-        gamePanel.add(timeLabel);
-
-        //Checks for clicks
         gamePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                int mousePosX = e.getX();
-                int mousePosY = e.getY();
-
-                for (int i = squares.size() - 1; i >= 0; i--) {
-                    SquareEntity sq = squares.get(i);
-
-                    if (mousePosX >= sq.coords[0] && mousePosX <= sq.coords[0] + sq.squareSize
-                            && mousePosY >= sq.coords[1] && mousePosY <= sq.coords[1] + sq.squareSize) {
-
-                        handleSquareClick(sq);
-                        break;
-                    }
-                }
+                handleClicks(e.getX(), e.getY());
             }
         });
     }
 
-    private void handleSquareClick(SquareEntity sq) {
+    private void handleClicks(int x, int y) {
+        synchronized (squares) {
+            for (int i = squares.size() - 1; i >= 0; i--) {
+                SquareEntity sq = squares.get(i);
+                if (x >= sq.coords[0] && x <= sq.coords[0] + sq.squareSize &&
+                    y >= sq.coords[1] && y <= sq.coords[1] + sq.squareSize) {
+                    
+                    if (sq.isRed) {
+                        score--;
+                        sq.squareSize += 10;
+                    } else {
+                        score++;
+                        sq.squareSize = Math.max(20, sq.squareSize - 10);
+                    }
+                    
+                    sq.isRed = !sq.isRed;
+                    changePlacement(sq);
+                    
+                    if (squares.size() < (1 + score / random.nextInt(3, 5))) addNewSquare();
 
-        if (sq.isRed) {
-            score -= 1;
-            sq.squareSize += UISize / 50;
-        } else {
-            score += 1;
-            sq.squareSize -= UISize / 50;
+                    scoreLabel.setText("Score: " + score);
+                    gamePanel.repaint();
+                    break;
+                }
+            }
         }
+    }
 
-        sq.isRed = !sq.isRed;
-        changePlacement(sq);
-
-        int targetSquareCount = 1 + Math.max(0, score / 5);
-        while (squares.size() < targetSquareCount) {
-            addNewSquare();
-        }
-
-        scoreLabel.setText("Score: " + score);
-        gamePanel.repaint();
+    private void stopGame(Display orgDisplay) {
+        uiStopWatch.stop();
+        randomTimer.stop();
+        orgDisplay.setScore(0, score);
+        JOptionPane.showMessageDialog(gamePanel, "Game Over! Score: " + score);
+        if (onExit != null) onExit.run();
     }
 
     private void addNewSquare() {
         SquareEntity newSq = new SquareEntity();
-        newSq.squareSize = UISize / 5;
-        newSq.isRed = true;
+        newSq.squareSize = 100;
         changePlacement(newSq);
-        squares.add(newSq);
+        synchronized (squares) {
+            squares.add(newSq);
+        }
     }
 
     private void changePlacement(SquareEntity sq) {
+        // Use panel width if available, otherwise use default UISize
+        int currentW = gamePanel.getWidth() > 0 ? gamePanel.getWidth() : UISize;
+        int currentH = gamePanel.getHeight() > 0 ? gamePanel.getHeight() : UISize;
 
-        int panelWidth = gamePanel.getWidth();
-        int panelHeight = gamePanel.getHeight();
+        int maxX = Math.max(1, currentW - sq.squareSize);
+        int maxY = Math.max(41, currentH - sq.squareSize);
 
-        sq.coords[0] = random.nextInt(Math.max(1, panelWidth - sq.squareSize));
-        sq.coords[1] = random.nextInt(Math.max(1, panelHeight - sq.squareSize));
+        sq.coords[0] = random.nextInt(maxX);
+        // Ensure it spawns below the 40px top bar
+        sq.coords[1] = 40 + random.nextInt(Math.max(1, maxY - 40));
     }
 
-    private void toggleColorRandomly() {
-        for (SquareEntity sq : squares) {
-            sq.isRed = random.nextBoolean();
-        }
+    public JPanel getGamePanel() { return gamePanel; }
 
-        int scoreBonus = Math.min(3500, score * 100);
-        int maxRandom = 1500 - scoreBonus;
-        int nextDelay = 500 + random.nextInt(Math.max(1, maxRandom));
-        randomTimer.setInitialDelay(nextDelay);
-        randomTimer.restart();
-        gamePanel.repaint();
-    }
-
-    public int getScore() {
-        return this.score;
-    }
-
-    public JPanel getGamePanel() {
-        return gamePanel;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    //thanks gemini..
-
-    // --- Inner class to hold data for individual squares ---
     private static class SquareEntity {
         boolean isRed = true;
         int squareSize;

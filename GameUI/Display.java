@@ -9,11 +9,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Date;
 
 import java.io.*;
@@ -47,12 +43,30 @@ public class Display {
         isDone[game] = true;
     }
 
-    private JLabel createTitle() {
-        JLabel title = new JLabel("Isle Be Better", SwingConstants.CENTER);
+    private JPanel createTitle() {
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+        titlePanel.setOpaque(false);
+        titlePanel.setBorder(new EmptyBorder(100, 0, 50, 0));
+
+        JLabel title = new JLabel("🌊 Isle Be Better 🌴", SwingConstants.CENTER);
         title.setForeground(ACCENT_CYAN);
         title.setFont(TITLE_FONT);
-        title.setBorder(new EmptyBorder(100, 0, 50, 0));
-        return title;
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel testText;
+        if (isDone[0] && isDone[1] && isDone[2]) {
+            testText = new JLabel("Enter you username to have your data saved and compared", SwingConstants.CENTER);
+        }
+        else {
+            testText = new JLabel("Test yourself against some of these three \"impossible\" tests", SwingConstants.CENTER);
+        }
+        testText.setForeground(ACCENT_CYAN);
+        testText.setFont(new Font("Arial", Font.BOLD, 20));
+        testText.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        titlePanel.add(title);
+        titlePanel.add(testText);
+        return titlePanel;
     }
 
     private void resetScore() {
@@ -65,11 +79,11 @@ public class Display {
         }
     }
 
-    public void createMenu() {
+     public void createMenu() {
         frame.getContentPane().removeAll();
         frame.setLayout(new BorderLayout());
 
-        JLabel title = createTitle();
+        JPanel titleHeader = createTitle(); // Changed from JLabel to JPanel
 
         JPanel buttonContainer = new JPanel(new GridBagLayout());
         buttonContainer.setOpaque(false);
@@ -80,37 +94,34 @@ public class Display {
 
         gbc.gridx = 0;
         if (!isDone[0]) {
-            buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], this::startGameOne), gbc);
+            buttonContainer.add(createGameGroup("AIM TRAINING 🎯", "Score: " + scores[0], this::startGameOne), gbc);
         }
         else {
-            buttonContainer.add(createGameGroup("REACTION SPEED", "Score: " + scores[0], () -> {}), gbc);
+            buttonContainer.add(createGameGroup("AIM TRAINING 🎯", "Score: " + scores[0], () -> {}), gbc);
         }
 
         gbc.gridx = 1;
         if (!isDone[1]) {
-            buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], this::startGameTwo), gbc);
+            buttonContainer.add(createGameGroup("MEMORY GAME 💡", "Score: " + scores[1], this::startGameTwo), gbc);
         }
         else {
-            buttonContainer.add(createGameGroup("MEMORY GAME", "Score: " + scores[1], () -> {}), gbc);
+            buttonContainer.add(createGameGroup("MEMORY GAME 💡", "Score: " + scores[1], () -> {}), gbc);
         }
 
         gbc.gridx = 2;
         if (!isDone[2]) {
-            buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], this::startGameThree), gbc);
+            buttonContainer.add(createGameGroup("TYPING GAME ✍️", "Score: " + scores[2], this::startGameThree), gbc);
         }
         else {
-            buttonContainer.add(createGameGroup("TYPING GAME", "Score: " + scores[2], () -> {}), gbc);
+            buttonContainer.add(createGameGroup("TYPING GAME ✍️", "Score: " + scores[2], () -> {}), gbc);
         }
 
-        // Once all games are done, add a username field and a submit button
         if (isDone[0] && isDone[1] && isDone[2]) {
-            buttonContainer.removeAll();  // Remove all game buttons
-
-            // Create username input and submit button
+            buttonContainer.removeAll();
             buttonContainer.add(createUsernameInput(), gbc);
         }
 
-        frame.add(title, BorderLayout.NORTH);
+        frame.add(titleHeader, BorderLayout.NORTH); // Adds the new panel to the top
         frame.add(buttonContainer, BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
@@ -118,7 +129,7 @@ public class Display {
 
     private JPanel createUsernameInput() {
         JPanel usernamePanel = new JPanel();
-        usernamePanel.setLayout(new BoxLayout(usernamePanel, BoxLayout.Y_AXIS));
+        usernamePanel.setLayout(new BoxLayout(usernamePanel, BoxLayout.X_AXIS));
         usernamePanel.setOpaque(false);
 
         // Create label and input for username
@@ -244,7 +255,7 @@ public class Display {
     }
     
     private void startGameTwo() {
-        MemoryPlus mem = new MemoryPlus(2, 1, () -> createMenu(), this);
+        MemoryPlus mem = new MemoryPlus(6, 1, () -> createMenu(), this);
         setScreen(mem.getGamePanel());
     }
     

@@ -48,7 +48,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                 case TypingTester.TypeResult.CORRECT:
                     labelText = String.format("<html>" +
                             "<font color='green'>%s</font>" +
-                            "<font color='white'>%s%s</font> " +
+                            "<font color='black'>%s%s</font> " +
                             "</html>", typingTester.getTypedString(), typingTester.getCharAsString(), typingTester.getUntypedString());
                     textLabel.setText(labelText);
                     break;
@@ -56,13 +56,13 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
                     labelText = String.format("<html>" +
                             "<font color='green'>%s</font>" +
                             "<font color='red'>%s</font>" +
-                            "<font color='white'>%s</font>" +
+                            "<font color='black'>%s</font>" +
                             "</html>", typingTester.getTypedString(), typingTester.getCharAsString(), typingTester.getUntypedString());
                     textLabel.setText(labelText);
                     break;
             }
 
-            scoreLabel.setText(Integer.toString(typingTester.getScore()));
+            scoreLabel.setText("Score: " + Integer.toString(typingTester.getScore()));
         }
 
 
@@ -84,7 +84,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         @Override
         protected Object doInBackground() throws Exception {
             while (true) {
-                timeLabel.setText(timer.timeSinceStart());
+                timeLabel.setText("Time: " + timer.timeSinceStart() + "s");
                 Thread.sleep(100);
             }
             //return null;
@@ -95,39 +95,46 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
         //TODO Make sure directional
         super(new BorderLayout());
         this.display = display;
-
         this.onGameOver = onGameOver;
-        timeLabel = new JLabel("00:00:000");
+        timeLabel = new JLabel("Time: 00:00:000");
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         textLabel = new JLabel();
-        scoreLabel = new JLabel("0");
+        textLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        scoreLabel = new JLabel("Score: 0");
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
 
 
         timeLabel.setForeground(Color.WHITE);
         textLabel.setForeground(Color.WHITE);
         scoreLabel.setForeground(Color.WHITE);
-
-        timeLabel.setHorizontalAlignment(JLabel.CENTER);
         textLabel.setHorizontalAlignment(JLabel.CENTER);
-        scoreLabel.setHorizontalAlignment(JLabel.CENTER);
-
         textLabel.setPreferredSize(new Dimension(100, 30));
+        // 1. Use BorderLayout for the sub-panel
+        JPanel grid = new JPanel(new BorderLayout()); 
+        grid.setBackground(Color.BLACK);
 
+        // 2. Add labels to the specific edges
+        grid.add(timeLabel, BorderLayout.WEST);   // Sticks to the left
+        grid.add(scoreLabel, BorderLayout.EAST);  // Sticks to the right
 
+        // 3. Optional: Add padding so they aren't touching the very edge
+        grid.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        add(timeLabel, BorderLayout.NORTH);
+        // 4. Add the grid to the main panel
+        add(grid, BorderLayout.NORTH);
         add(textLabel, BorderLayout.CENTER);
-        add(scoreLabel, BorderLayout.EAST);
 
         try {
-            typingTester = new TypingTester(5);
+            typingTester = new TypingTester(15);
             timer = new UIStopWatch();
 
             KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 
             textLabel.setText(String.format("<html>" +
-                    "<font color='white'>%s</font>" +
+                    "<font color='black'>%s</font>" +
                     "</html>",  typingTester.getParagraph()));
+            textLabel.setHorizontalAlignment(JLabel.CENTER);
 
             //Updates the label displaying the timer
             timerLabelUpdater = new TimerLabelUpdater(timer, timeLabel);
@@ -140,7 +147,7 @@ public class Game3UI extends JPanel implements KeyEventDispatcher {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
